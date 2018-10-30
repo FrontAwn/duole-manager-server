@@ -5,7 +5,7 @@ module.exports = appInfo => {
 
     config.mysql = {
       clients: {
-        
+
         sj_resource: {
           host: "192.168.1.121",
           port: '3306',
@@ -25,6 +25,11 @@ module.exports = appInfo => {
       agent: false,
     };  
 
-
+    config.cluster={
+      listen: {
+        port: 8101,
+        hostname: '192.168.1.121',
+      }
+    }
     return config;
 };
