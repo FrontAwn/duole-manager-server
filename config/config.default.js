@@ -13,51 +13,12 @@ module.exports = appInfo => {
       fields: 'body'
     }
 
-
-    // config.multipart = {
-    //     fileSize: '100mb',
-    //     mode:'stream'
-    // };
-
     config.bodyParser = {
       multipart: true,
       formLimit: '300mb',
       jsonLimit: '300mb',
       textLimit: '300mb'
     };
-
-
-
-    config.mysql = {
-      clients: {
-
-        test: {
-          host: 'localhost',
-          port: '3306',
-          user: 'root',
-          password: '123456',
-          database: 'test',
-        },
-
-        daily_report: {
-          host: 'localhost',
-          port: '3306',
-          user: 'root',
-          password: '123456',
-          database: 'daily_report',
-        }, 
-               
-      },
-      default: {
-
-      },
-
-      // 是否加载到 app 上，默认开启
-      app: true,
-      // 是否加载到 agent 上，默认关闭
-      agent: false,
-    };  
-
 
     config.security = {
       csrf: {

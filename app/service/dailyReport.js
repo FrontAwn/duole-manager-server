@@ -9,7 +9,7 @@ class DailyReportService extends Service {
 
 	constructor(ctx) {
 		super(ctx)
-		this.DailyReportDB = mysql.get('daily_report');
+		this.DailyReportDB = mysql.get('sj_resource');
 	}
 
 

@@ -3,9 +3,8 @@ var mysql = require('./app/utils/mysql.js')
 
 module.exports = app => {
 	cache.setItem('app',app,true);
-	mysql.instance('test');
-	mysql.instance('daily_report');
-
+	mysql.instance('sj_resource');
+	
 	app.once('server', server => {
 
 	});
