@@ -90,7 +90,6 @@ class Mysql {
 				}
 				values['between'] = values['between'].slice(0,2);
 				let betweenScope = (this.conn.escape(values['between'])).split(',');
-				debug(betweenScope,'betweenScope')
 				where.push(`${attribute} between ${betweenScope[0]} and ${betweenScope[1]}`)
 			}
 
@@ -204,7 +203,7 @@ class Mysql {
 			throw new Error('finds函数请传入tableName')
 		}
 
-		if( conditions.hasOwnProperty('columns') && !isArray(conditions['columns']) ) {
+		if( conditions.hasOwnProperty('columns') && !Array.isArray(conditions['columns']) ) {
 			throw new Error('finds函数columns属性需要array类型传入')
 		}
 
@@ -213,7 +212,8 @@ class Mysql {
 		var columns = "*"
 
 		if( conditions.hasOwnProperty('columns') ) {
-			columns = this.conn.escape(conditions['columns']);
+			// conditions['columns'].join(",").split(',')
+			columns = conditions['columns'].join(",");
 		}
 
 		if ( Array.isArray(tableName) ) {
@@ -247,10 +247,20 @@ class Mysql {
 		}
 
 		sql = sql.join(' ');
-		debug(sql,'sql')
+		debug(sql)
 		var res = await this.conn.query(sql);
 		return res;
 
+	}
+
+
+	async get(tableName,conditions,conn=null) {
+		conditions['limit'] = {
+			'page':1,
+			'length':1
+		}
+		var res = await this.finds(tableName,conditions,conn)
+		return res[0]
 	}
 
 }

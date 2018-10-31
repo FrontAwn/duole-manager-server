@@ -169,10 +169,16 @@ exports.getBeforeOneMonth = ()=>{
 
 
 
-exports.getBeforeWeekByNum = (num=4)=>{
+exports.getBeforeWeekByNum = (num=4,defaultDate=null)=>{
     let res = {}
     let dateScope = null
-    let initDate = moment().format('YYYY-MM-DD')
+    var initDate = ''
+    if (defaultDate === null) {
+      initDate = moment().format('YYYY-MM-DD')
+    } else {
+      initDate = moment(defaultDate).format('YYYY-MM-DD')
+    }
+     
     let startTime = "00:00:00"
     let endTime = "23:59:59"
 
@@ -196,10 +202,11 @@ exports.getBeforeWeekByNum = (num=4)=>{
         dateScope = getDateScope(initDate);
         initDate = dateScope['nextEndDate']
         res[i+1+'-week'] = dateScope
-    }
+    }  
 
     return res
 }
+
 
 
 

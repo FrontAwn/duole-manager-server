@@ -14,7 +14,19 @@ class DailyReportService extends Service {
 
 
 	async getCurrentStockBeforeWeekByNum(num,sku=null) {
-		var dates = date.getBeforeWeekByNum(num)
+		var lastDate = null
+		await this.DailyReportDB.scope(async conn=>{
+			var res = await this.DailyReportDB.get(
+				'daily_report_current_stock',
+				{
+					'columns':['create_time'],
+					'child':'order by create_time desc',
+				},
+				conn
+			)
+			lastDate = res['create_time']
+		})
+		var dates = date.getBeforeWeekByNum(num,lastDate)
 		var wheres = {}
 		for( let i in dates ) {
 			let date = dates[i]
@@ -34,6 +46,7 @@ class DailyReportService extends Service {
 		}
 
 		var datas = {}
+		datas['lastDate'] = moment(lastDate).format('YYYY-MM-DD');
 		await this.DailyReportDB.scope(async conn=>{
 			for (let i in wheres) {
 				let conditions = wheres[i]
