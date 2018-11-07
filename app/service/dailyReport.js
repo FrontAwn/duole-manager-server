@@ -4,7 +4,6 @@ var moment = require('moment')
 var mysql = require('../utils/mysql')
 var date = require('../utils/date.js')
 
-
 class DailyReportService extends Service {
 
 	constructor(ctx) {
@@ -12,7 +11,7 @@ class DailyReportService extends Service {
 		this.DailyReportDB = mysql.get('sj_resource');
 	}
 
-
+	// 根据周来筛选日报现货数据信息
 	async getCurrentStockBeforeWeekByNum(num,sku=null) {
 		var lastDate = null
 		await this.DailyReportDB.scope(async conn=>{

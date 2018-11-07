@@ -8,8 +8,9 @@ var date = require('../utils/date.js')
 class TestController extends Controller {
 
   	async index() {
-         var dates = date.getBeforeWeekByNum(4,'2018-10-24');
-         debug(dates,'dates');
+         // var dates = date.getBeforeWeekByNum(4,'2018-10-24');
+         // debug(dates,'dates');
+         this.ctx.body = "test response"
   	}
     
 }

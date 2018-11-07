@@ -9,6 +9,7 @@ var cache = {
 		'__UTILS__':path.resolve(__dirname,'../utils'),
 		'__UPLOADS__':path.resolve(__dirname,'../../uploads'),
 		'__DOWNLOADS__':path.resolve(__dirname,'../../downloads'),
+		'__TEMPLATES__':path.resolve(__dirname,'../../templates'),
 	},
 
 	setItem:function(idx,item,force=false){
