@@ -30,16 +30,24 @@ class DailyReportService extends Service {
 		for( let i in dates ) {
 			let date = dates[i]
 			wheres[i] = {
+				'columns':[
+					'total',
+					'maori',
+					'brand_price',
+					'retail',
+					'retail_price',
+					'cost_info'
+				],
 				'where':{
 					'sku':{
 						'equals':sku
 					},
+					'create_time':{
+						'between':[date['sTime'],date['eTime']]
+					},
 					'total':{
 						'greaterThen':0
 					},
-					'create_time':{
-						'between':[date['sTime'],date['eTime']]
-					}	
 				}
 			}
 		}
