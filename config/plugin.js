@@ -25,3 +25,8 @@ exports.bodyParser = {
   package: 'body-parser',
 }
 
+exports.redis = {
+  enable: true,
+  package: 'egg-redis',
+};
+

@@ -1,21 +1,21 @@
-var cache = require('./cache.js');
+const Container = require('../core/Container');
 var index = 0;
 
 function debug(body,sign=null) {
-	var ctx = cache.getItem('ctx');
+	var ctx = Container.get('ctx')
 	var query = ctx.query;
 	if( sign === null ) {
 		sign = index
 		index += 1;
 	}
 
-	if( cache.getItem('debugContent') === null ) {
-		cache.setItem('debugContent',{})
+	if( Container.get('debugContent') === null ) {
+		Container.add('debugContent',{})
 	}
 
-	var contents = cache.getItem('debugContent');
+	var contents = Container.get('debugContent');
 	contents[sign] = body
-	cache.setItem('debugContent',contents)
+	Container.add('debugContent',contents)
 
 	if( query.hasOwnProperty('debug') ) {
 		ctx.body = contents;
@@ -23,7 +23,7 @@ function debug(body,sign=null) {
 }
 
 function success(data,msg='success',code=200) {
-	var ctx = cache.getItem('ctx');
+	var ctx = Container.get('ctx');
 	var query = ctx.query;
 	if( !query.hasOwnProperty('debug') ) {
 		ctx.body = {data,msg,code};
@@ -31,7 +31,7 @@ function success(data,msg='success',code=200) {
 }
 
 function error(data,msg="failed",code=400) {
-	var ctx = cache.getItem('ctx');
+	var ctx = Container.get('ctx');
 	var query = ctx.query;
 	if( !query.hasOwnProperty('debug') ) {
 		ctx.body = {data,msg,code};

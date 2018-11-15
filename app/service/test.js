@@ -8,8 +8,6 @@ class TestService extends Service {
 	}
 
 
-
-
 }
 
 

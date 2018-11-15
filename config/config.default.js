@@ -33,6 +33,16 @@ module.exports = appInfo => {
       allowMethods: 'GET,POST'
     };
 
+    config.redis = {
+      clients: {
+        'default':{
+          port: 6379,          // Redis port
+          host: '127.0.0.1',   // Redis host
+          password: 'auth',
+          db: 0,
+        }
+      },
+    }
 
     return config;
 };

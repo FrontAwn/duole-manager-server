@@ -1,14 +1,14 @@
 const Service = require('egg').Service
 var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
-var mysql = require('../utils/mysql')
+var mysql = require('../utils/mysql.js')
 var date = require('../utils/date.js')
 
 class DailyReportService extends Service {
 
 	constructor(ctx) {
 		super(ctx)
-		this.DailyReportDB = mysql.get('sj_resource');
+		this.DailyReportDB = mysql.getDatabase('sj_resource');
 	}
 
 	// 根据周来筛选日报现货数据信息

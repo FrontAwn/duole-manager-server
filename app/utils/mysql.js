@@ -1,13 +1,11 @@
-const cache = require('./cache.js')
-const debug = require('./utils.js').common.debug;
+const Database = require('../core/Database.js')
+const debug = require('./utils').common.debug;
 
-class Mysql {
+class Mysql extends Database {
 
-	constructor(dbName) {
-		this.app = cache.getItem('app');
-		this.ctx = cache.getItem('ctx')
-		this.dbName = dbName
-		this.db = this.app.mysql.get(dbName);
+	constructor(databaseName) {
+		super(databaseName,'mysql')
+		this.db = this.mysql.get(databaseName);
 		this.conn = null
 	}
 
@@ -22,32 +20,159 @@ class Mysql {
 		return this.conn;
 	}
 
-	static instance(dbName) {
-		if ( this.dbs.hasOwnProperty(dbName) ) {
-			return this.dbs[dbName]
-		} else {
-			let db = new Mysql(dbName)
-			this.dbs[dbName] = db
-			return db;
-		}
+
+	async scope(statement) {
+		return await this.db.beginTransactionScope(statement,this.ctx);
 	}
 
-	static get(dbName) {
-		if ( this.dbs.hasOwnProperty(dbName) ) {
-			return this.dbs[dbName]
-		} else {
-			return null
+
+	async insertAll(tableName,datas,conn=null) {
+		var columns = null
+		var values = null
+		if ( conn !== null ) {
+			this.conn = conn
 		}
+		var datas = JSON.parse(JSON.stringify(datas));
+		if( datas.hasOwnProperty('columns') && datas.hasOwnProperty('values') ) {
+			columns = datas['columns'].join(',')
+			values = datas['values']
+		} else {
+			columns = (Object.keys(datas[0])).join(',')
+			values = [];
+			for (let i in datas) {
+				let val = datas[i]
+				values.push(Object.values(val))
+			}
+		}
+
+		let sql = `insert into ${tableName} (${(this.conn.escape(columns)).replace(/\'/g, "")}) values ${this.conn.escape(values)}`;
+		var res = await this.conn.query(sql)
+		return res;
 	}
 
-	buildWhere(conditions,conn=null) {
+
+	async remove(tableName,conditions,conn=null) {
+		if ( conn !== null ) {
+			this.conn = conn
+		}
+
+		if( !tableName ) {
+			throw new Error('remove函数请传入tableName')
+		}
+
+		if( !conditions || typeof conditions !== 'object' || Array.isArray(conditions) ) {
+			throw new Error('remove函数删除条件异常')
+		}
+
+		var where = this.getWhere(conditions)
+		let sql = `delete from ${tableName} ${where}`
+		var res = await this.conn.query(sql)
+		return res;
+	}
+
+	async modify(tableName,options,conditions,conn=null) {
+
+		if ( conn !== null ) {
+			this.conn = conn
+		}
+
+		if( !tableName ) {
+			throw new Error('modify函数请传入tableName')
+		}
+
+		if( !conditions || typeof conditions !== 'object' || Array.isArray(conditions) ) {
+			throw new Error('remove函数删除条件异常')
+		}
+
+		options = this.conn.escape(options)
+
+		var where = this.getWhere(conditions)
+
+		// sql
+
+	}
+
+
+	async finds(tableName,conditions,conn=null) {
+		if( conn !== null ) {
+			this.conn = conn
+		}
+
+		if( !tableName ) {
+			throw new Error('finds函数请传入tableName')
+		}
+
+		if( conditions.hasOwnProperty('columns') && !Array.isArray(conditions['columns']) ) {
+			throw new Error('finds函数columns属性需要array类型传入')
+		}
+
+		var sql = [];
+
+		var columns = "*"
+
+		if( conditions.hasOwnProperty('columns') ) {
+			// conditions['columns'].join(",").split(',')
+			columns = conditions['columns'].join(",");
+		}
+
+		if ( Array.isArray(tableName) ) {
+			tableName = tableName.join(',')
+		}
+
+		sql.push(`SELECT ${columns} FROM ${tableName}`)
+
+		if( conditions.hasOwnProperty('where') ) {
+			sql.push(this.getWhere(conditions['where']))
+		}
+
+		if( conditions.hasOwnProperty('child') ) {
+			if ( Array.isArray(conditions['child']) ) {
+				conditions['child'] = conditions['child'].join(' ');
+			}
+			sql.push(conditions['child'])
+		}
+
+		if( conditions.hasOwnProperty('limit') ) {
+			var page = 0
+			var length = 9999
+			if (conditions['limit'].hasOwnProperty('length')) {
+				length = conditions['limit']['length']
+			}
+
+			if (conditions['limit'].hasOwnProperty('page')) {
+				page = (parseInt(conditions['limit']['page'])-1)*length
+			}
+			sql.push(`limit ${page},${length}`)
+		}
+
+		sql = sql.join(' ');
+		debug(sql)
+		var res = await this.conn.query(sql);
+		return res;
+
+	}
+
+
+	async get(tableName,conditions,conn=null) {
+		conditions['limit'] = {
+			'page':1,
+			'length':1
+		}
+		var res = await this.finds(tableName,conditions,conn)
+		return res[0]
+	}
+
+
+
+
+	getWhere(conditions,conn=null) {
 
 		if ( conn !== null ) {
 			this.conn = conn
 		}
 
 		if (typeof conditions !== 'object') {
-			throw new Error('buildWhere函数参数请传入键值对object类型')
+			throw new Error('getWhere函数参数请传入键值对object类型')
 		}
 
 		if (Object.keys(conditions).length === 0) {
@@ -122,151 +247,7 @@ class Mysql {
 	}
 
 
-	async scope(statement) {
-		return await this.db.beginTransactionScope(statement,this.ctx);
-	}
-
-
-	async insertAll(tableName,datas,conn=null) {
-		var columns = null
-		var values = null
-		if ( conn !== null ) {
-			this.conn = conn
-		}
-		var datas = JSON.parse(JSON.stringify(datas));
-		if( datas.hasOwnProperty('columns') && datas.hasOwnProperty('values') ) {
-			columns = datas['columns'].join(',')
-			values = datas['values']
-		} else {
-			columns = (Object.keys(datas[0])).join(',')
-			values = [];
-			for (let i in datas) {
-				let val = datas[i]
-				values.push(Object.values(val))
-			}
-		}
-
-		let sql = `insert into ${tableName} (${(this.conn.escape(columns)).replace(/\'/g, "")}) values ${this.conn.escape(values)}`;
-		var res = await this.conn.query(sql)
-		return res;
-	}
-
-
-	async remove(tableName,conditions,conn=null) {
-		if ( conn !== null ) {
-			this.conn = conn
-		}
-
-		if( !tableName ) {
-			throw new Error('remove函数请传入tableName')
-		}
-
-		if( !conditions || typeof conditions !== 'object' || Array.isArray(conditions) ) {
-			throw new Error('remove函数删除条件异常')
-		}
-
-		var where = this.buildWhere(conditions)
-		let sql = `delete from ${tableName} ${where}`
-		var res = await this.conn.query(sql)
-		return res;
-	}
-
-	async modify(tableName,options,conditions,conn=null) {
-
-		if ( conn !== null ) {
-			this.conn = conn
-		}
-
-		if( !tableName ) {
-			throw new Error('modify函数请传入tableName')
-		}
-
-		if( !conditions || typeof conditions !== 'object' || Array.isArray(conditions) ) {
-			throw new Error('remove函数删除条件异常')
-		}
-
-		options = this.conn.escape(options)
-
-		var where = this.buildWhere(conditions)
-
-		// sql
-
-	}
-
-
-	async finds(tableName,conditions,conn=null) {
-		if( conn !== null ) {
-			this.conn = conn
-		}
-
-		if( !tableName ) {
-			throw new Error('finds函数请传入tableName')
-		}
-
-		if( conditions.hasOwnProperty('columns') && !Array.isArray(conditions['columns']) ) {
-			throw new Error('finds函数columns属性需要array类型传入')
-		}
-
-		var sql = [];
-
-		var columns = "*"
-
-		if( conditions.hasOwnProperty('columns') ) {
-			// conditions['columns'].join(",").split(',')
-			columns = conditions['columns'].join(",");
-		}
-
-		if ( Array.isArray(tableName) ) {
-			tableName = tableName.join(',')
-		}
-
-		sql.push(`SELECT ${columns} FROM ${tableName}`)
-
-		if( conditions.hasOwnProperty('where') ) {
-			sql.push(this.buildWhere(conditions['where']))
-		}
-
-		if( conditions.hasOwnProperty('child') ) {
-			if ( Array.isArray(conditions['child']) ) {
-				conditions['child'] = conditions['child'].join(' ');
-			}
-			sql.push(conditions['child'])
-		}
-
-		if( conditions.hasOwnProperty('limit') ) {
-			var page = 0
-			var length = 9999
-			if (conditions['limit'].hasOwnProperty('length')) {
-				length = conditions['limit']['length']
-			}
-
-			if (conditions['limit'].hasOwnProperty('page')) {
-				page = (parseInt(conditions['limit']['page'])-1)*length
-			}
-			sql.push(`limit ${page},${length}`)
-		}
-
-		sql = sql.join(' ');
-		debug(sql)
-		var res = await this.conn.query(sql);
-		return res;
-
-	}
-
-
-	async get(tableName,conditions,conn=null) {
-		conditions['limit'] = {
-			'page':1,
-			'length':1
-		}
-		var res = await this.finds(tableName,conditions,conn)
-		return res[0]
-	}
-
 }
-
-
-Mysql.dbs = {}
 
 module.exports = Mysql;
 

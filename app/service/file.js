@@ -1,12 +1,12 @@
 const Service = require('egg').Service;
 const File = require('../utils/file.js')
-const Cache = require('../utils/cache.js')
 const path = require('path')
+const paths = require('../core/Container').get('paths')
 
 class FileService extends Service {
 
 	async checkFileExists(filename,fileMD5) {
-		let UploadPath = Cache.getItem('__UPLOADS__');
+		let UploadPath = paths['uploads'];
 		let fileRealPath = path.join(UploadPath,filename)
 		let fileRealMd5Path = path.join(UploadPath,fileMD5)
 		return await File.getChunkList(fileRealPath,fileRealMd5Path);
@@ -14,7 +14,7 @@ class FileService extends Service {
 	}
 
 	async uploadFileChunk(fileSource,fileMD5,currentChunkIdx) {
-		var UploadPath = path.join(Cache.getItem('__UPLOADS__'),fileMD5);
+		var UploadPath = path.join(paths['uploads'],fileMD5);
 
 		var isExist = await File.folderIsExists(UploadPath)
 
@@ -31,8 +31,8 @@ class FileService extends Service {
 	}
 
 	async mergeFileChunks(fileName,fileMD5) {
-		var fileChunkDir = path.join(Cache.getItem('__UPLOADS__'),fileMD5);
-		var fileDestinationDir = Cache.getItem('__UPLOADS__');
+		var fileChunkDir = path.join(paths['uploads'],fileMD5);
+		var fileDestinationDir = paths['uploads'];
 		await File.mergeFileChunks(fileChunkDir,fileDestinationDir,fileName);
 		var realPath = path.join(fileDestinationDir,fileName);
 		return realPath

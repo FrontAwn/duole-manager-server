@@ -3,17 +3,18 @@ var common = require('../utils/utils').common
 var ejsexcel = require('ejsexcel')
 var fs = require('fs')
 var mysql = require('../utils/mysql')
-var cache = require('../utils/cache')
 var moment = require('moment')
+var paths = require('../core/Container').get('paths')
 
 class TaobaoController extends Controller {
 
 	// 导出淘宝店铺商品列表
 	async exportTaobaoProductList() {
 		var self = this
-		var SjResourceDB = mysql.get('sj_resource');
-		var templatePath = cache.getItem('__TEMPLATES__');
-		var downloadPath = cache.getItem('__DOWNLOADS__');
+		var SjResourceDB = mysql.getDatabase('sj_resource');
+		var templatePath = paths['templates'];
+		var downloadPath = paths['downloads'];
+
 		var taobaoProductListTemplate = templatePath+'/淘宝商品列表_template.xlsx'
 		var taobaoProductListExcelFile = `${downloadPath}/淘宝商品列表_${moment().format('YYYY-MM-DD HH-mm-ss')}.xlsx`
 		var product = []
