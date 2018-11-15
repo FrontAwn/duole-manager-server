@@ -39,7 +39,6 @@
     "start": "egg-scripts start --env=prod --daemon --title=egg-server-egg-framework",
     "stop": "egg-scripts stop --title=egg-server-egg-framework",
     "dev": "egg-bin dev --port 8101",
-    "prod": "EGG_SERVER_ENV=prod egg-bin dev --port 8101",
     "debug": "egg-bin debug --proxy=9999 --inpsect=9229 --inspect-brk",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",
