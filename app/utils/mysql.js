@@ -163,7 +163,7 @@ class Mysql extends Database {
 			'length':1
 		}
 		var res = await this.finds(tableName,conditions,conn)
-		return res[0]
+		return res.length === 0 ? {} : res[0]
 	}
 
 

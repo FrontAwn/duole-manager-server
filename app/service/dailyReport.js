@@ -30,9 +30,14 @@ class DailyReportService extends Service {
 					},
 					conn
 				)
-				lastDate = res['create_time']
+				if ( res.hasOwnProperty('create_time') ) {
+					lastDate = res['create_time']
+				}
 			}
 		)
+
+		if ( lastDate === null )  return {}
+
 		var redisKey = `DaliyReportCurrentStockBySku:${sku}`
 		var cacheIsExists = await this.RedisDB.exists(redisKey)
 		if( cacheIsExists ) {
@@ -40,8 +45,8 @@ class DailyReportService extends Service {
 			if( Object.is(cacheLastDate,lastDate) ) {
 				debug('cache','status')
 				debug(redisKey,'cacheKey')
-				debug(lastDate,'当前数据库时间')
-				debug(cacheLastDate,'redis时间')
+				debug(lastDate,'mysql截止时间')
+				debug(cacheLastDate,'redis截止时间')
 				let res = await this.RedisDB.hget(redisKey,'datas')
 				return JSON.parse(res)
 			}
