@@ -33,7 +33,7 @@ class DailyReportService extends Service {
 				lastDate = res['create_time']
 			}
 		)
-		var redisKey = `DaliyReportCurrentStock:${sku}`
+		var redisKey = `DaliyReportCurrentStockBySku:${sku}`
 		var cacheIsExists = await this.RedisDB.exists(redisKey)
 		if( cacheIsExists ) {
 			var cacheLastDate = await this.RedisDB.hget(redisKey,'lastDate')
