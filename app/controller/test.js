@@ -9,19 +9,15 @@ var redis = require('../utils/redis.js')
 class TestController extends Controller {
 
   	async index() {
-         // var redis = this.ctx.app.redis
-         // var cyf = await redis.hgetall('cyf')
-   //       let SJ_Database = mysql.getDatabase('sj_resource')
-   //       await SJ_Database.scope(async conn=>{
-			// let datas = await SJ_Database.finds('daily_report_current_stock',{
-			// 	'where':{
-			// 		'id':{
-			// 			'equals':300,
-			// 		}
-			// 	}
-			// },conn) 
-			// debug(datas,'datas');
-   //       })
+  		const RedisDB = redis.getDatabase('default').getOriginal();
+  		// await RedisDB.hmset('cyf',{'name':'cyf','age':24,'job':'developer'})
+  		// await RedisDB.del('cyf')
+  		// let obj = await RedisDB.hgetall('cyf')
+  		// debug(obj,'obj')
+  		// const status = await RedisDB.exists('cyf');
+  		// debug(status,'status')
+  		// let keys = await RedisDB.keys('*')
+  		// debug(Object.getOwnPropertyNames(RedisDB),'keys')
   	}
     
 }

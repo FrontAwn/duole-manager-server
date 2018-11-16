@@ -8,7 +8,9 @@ class Redis extends Database{
 		this.db = this.redis.get(databaseName)
 	}
 
-
+	getOriginal() {
+		return this.db
+	}
 
 }
 

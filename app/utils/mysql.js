@@ -9,6 +9,10 @@ class Mysql extends Database {
 		this.conn = null
 	}
 
+	getOriginal() {
+		return this.db;
+	}
+
 	setConnect(conn) {
 		if ( this.conn === null ) {
 			this.conn = conn

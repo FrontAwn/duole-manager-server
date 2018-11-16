@@ -3,28 +3,50 @@ var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
 var mysql = require('../utils/mysql.js')
 var date = require('../utils/date.js')
+var redis = require('../utils/redis')
 
 class DailyReportService extends Service {
 
 	constructor(ctx) {
 		super(ctx)
 		this.DailyReportDB = mysql.getDatabase('sj_resource');
+		this.RedisDB = redis.getDatabase('default').getOriginal()
 	}
 
 	// 根据周来筛选日报现货数据信息
 	async getCurrentStockBeforeWeekByNum(num,sku=null) {
 		var lastDate = null
 		await this.DailyReportDB.scope(async conn=>{
-			var res = await this.DailyReportDB.get(
-				'daily_report_current_stock',
-				{
-					'columns':['create_time'],
-					'child':'order by create_time desc',
-				},
-				conn
-			)
-			lastDate = res['create_time']
-		})
+				var res = await this.DailyReportDB.get(
+					'daily_report_current_stock',
+					{
+						'columns':['create_time'],
+						'where':{
+							'sku':{
+								'equals':sku
+							},
+						},
+						'child':'order by create_time desc',
+					},
+					conn
+				)
+				lastDate = res['create_time']
+			}
+		)
+		var redisKey = `DaliyReportCurrentStock:${sku}`
+		var cacheIsExists = await this.RedisDB.exists(redisKey)
+		if( cacheIsExists ) {
+			var cacheLastDate = await this.RedisDB.hget(redisKey,'lastDate')
+			if( Object.is(cacheLastDate,lastDate) ) {
+				debug('cache','status')
+				debug(redisKey,'cacheKey')
+				debug(lastDate,'当前数据库时间')
+				debug(cacheLastDate,'redis时间')
+				let res = await this.RedisDB.hget(redisKey,'datas')
+				return JSON.parse(res)
+			}
+		}
+
 		var dates = date.getBeforeWeekByNum(num,lastDate)
 		var wheres = {}
 		for( let i in dates ) {
@@ -59,7 +81,15 @@ class DailyReportService extends Service {
 				let conditions = wheres[i]
 				datas[i] = await this.DailyReportDB.finds('daily_report_current_stock',conditions,conn);
 			}
+			debug(redisKey,'needCacheKey')
+			debug('disk','status')
 		})
+		let dataCacheStrings = JSON.stringify(datas);
+		await this.RedisDB.hmset(redisKey,{
+			'lastDate':lastDate,
+			'datas': dataCacheStrings
+		});
+
 		return datas;
 
 	}
