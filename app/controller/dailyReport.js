@@ -2,7 +2,7 @@ const Controller = require('egg').Controller;
 const path = require('path');
 var common = require('../utils/utils').common
 var xlsxParse = require('../utils/xlsxParse.js');
-var titleConfig = require('../config/excel.config.js')['logFromCurrent'];
+var existingStockConfig = require('../config/excel/existing.stock.js')
 
 class DailyReportController extends Controller {
 
@@ -10,7 +10,7 @@ class DailyReportController extends Controller {
   async handleDailyReportFromCurrentStock() {
   	const { filePath, selectDate, replaceStatus } = this.ctx.query
     const workboot = new xlsxParse(filePath,'现货');
-    workboot.loadConfig(titleConfig);
+    workboot.loadConfig(existingStockConfig);
     var insertRes = await this.service.dailyReport.handleDailyReportFromCurrentStock(workboot,replaceStatus,selectDate);
     if( insertRes.status === 'success' ) {
     	common.success({status:'ok'});

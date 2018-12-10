@@ -30,3 +30,7 @@ exports.redis = {
   package: 'egg-redis',
 };
 
+exports.sequelize = {
+  enable: true,
+  package: 'egg-sequelize'
+}

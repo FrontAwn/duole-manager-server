@@ -7,6 +7,7 @@ var Container = require('./app/core/Container.js')
 module.exports = app => {
 	var home = __dirname;
 	Container.add('app',app)
+	Container.add('sequelizeClass',app.Sequelize);
 
 	var paths = Container.add('paths',{})
 	Container.add('home',home,paths)
@@ -22,13 +23,8 @@ module.exports = app => {
 	Container.add('core',path.join(home,'/app/core'),paths)
 	Container.add('extend',path.join(home,'/app/extend'),paths)
 	Container.add('schedule',path.join(home,'/app/schedule'),paths)
-
 	mysql.instance('sj_resource');
 	redis.instance('default');
-
-	// app.once('server', server => {
-
-	// });
 
 	app.on('error', (err, ctx) => {
 		ctx.body = err;
@@ -39,10 +35,10 @@ module.exports = app => {
 	});
 
 	app.on('response', async ctx => {
-		debug(Object.keys(Container.list()),'ContainerList')
-		debug(Object.keys(Container.get('mysql')),'MysqlList')
-		debug(Object.keys(Container.get('redis')),'RedisList')
-		debug(Container.get('paths'),'PathList')
+		// debug(Object.keys(Container.list()),'ContainerList')
+		// debug(Object.keys(Container.get('mysql')),'MysqlList')
+		// debug(Object.keys(Container.get('redis')),'RedisList')
+		// debug(Container.get('paths'),'PathList')
 	});
 
 };

@@ -32,5 +32,40 @@ module.exports = appInfo => {
         hostname: '127.0.0.1',
       }
     }
+
+
+    config.sequelize = {
+        datasources:[
+            // {
+            //     dialect: 'mysql', 
+            //     database: 'existing-stock',
+            //     host: '192.168.1.121',
+            //     port: '3306',
+            //     username: 'song',
+            //     password: 'SongAbc12345',
+            //     delegate: 'ExistingStock',
+            //     baseDir:'model/existing-stock',
+            //     define: {
+            //         timestamps:false,
+            //         freezeTableName: true,
+            //     },
+            // },
+            {
+                dialect: 'mysql', 
+                database: 'sj-resource',
+                host: '192.168.1.121',
+                port: '3306',
+                username: 'song',
+                password: 'SongAbc12345',
+                delegate: 'SjResource',
+                baseDir:'model/sj-resource',
+                define: {
+                    timestamps:false,
+                    freezeTableName: true,
+                },
+            },
+        ]
+    }
+    
     return config;
 };
