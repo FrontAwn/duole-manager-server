@@ -8,28 +8,23 @@ module.exports = app => {
   router.get('/test', controller.test.index);
 
   router.get('/api/update',controller.api.update)
-  
+  router.get('/api/finds',controller.api.finds)
+  router.get('/api/count',controller.api.count)
+  router.get('/api/create',controller.api.create)
+  router.get('/api/delete',controller.api.delete)
+
   // 处理日报excel保存数据
   router.get('/dailyReport/handleDailyReportFromCurrentStock', controller.dailyReport.handleDailyReportFromCurrentStock);
   // 根据sku获得近4周每周日报现货的数据
   router.get('/dailyReport/getBeforeFrouWeekCurrentStockBySku', controller.dailyReport.getBeforeFrouWeekCurrentStockBySku);
-
   //导出淘宝店铺商品excel表
   router.get('/taobao/exportTaobaoProductList', controller.taobao.exportTaobaoProductList);
 
   //毒app du_sku_list
-  router.get('/duApp/saveSkus',controller.duApp.saveSkus);
-  router.get('/duApp/getAllSkus',controller.duApp.getAllSkus);
-  router.get('/duApp/saveSkuTargetName',controller.duApp.saveSkuTargetName)
-  router.get('/duApp/saveSkuState',controller.duApp.saveSkuState)
-  router.get('/duApp/saveSkuOffset',controller.duApp.saveSkuOffset)
-  router.get('/duApp/saveExceptContent',controller.duApp.saveExceptContent)
-  router.get('/duApp/getExceptSkus',controller.duApp.getExceptSkus)
-  //毒app du_sku_detail
-  router.get('/duApp/getAllDetails',controller.duApp.getAllDetails)
-  router.get('/duApp/exportDetails',controller.duApp.exportDetails)
-
-  
+  router.post('/duApp/saveSkus',controller.duApp.saveSkus);
+  //导出毒app抓取的数据
+  router.get('/duApp/exportCurrentDayDetails',controller.duApp.exportCurrentDayDetails)
+  router.get('/duApp/exportHistoryDetails',controller.duApp.exportHistoryDetails)
 
 
   // 大文件上传操作

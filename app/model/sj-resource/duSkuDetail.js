@@ -57,7 +57,13 @@ module.exports = app=>{
 			defaultValue:'',
 		},
 
-		create_time:{
+		type:{
+			type:INTEGER(4).UNSIGNED,
+			allowNull:false,
+			defaultValue:0,
+		},
+
+		update_time:{
 			type:STRING(100),
 			allowNull:false,
 			defaultValue:'',

@@ -1,13 +1,58 @@
-const Controller = require('egg').Controller;
+    const Controller = require('egg').Controller;
 const path = require('path');
 var common = require('../utils/utils').common
 var moment = require('moment')
 
 class ApiController extends Controller {
 
-    async query () {
+    async finds () {
+        let query = this.ctx.query;
+        let db = this.ctx[query['db']] || this.ctx.SjResource
+        if ( !query.hasOwnProperty('table') || !db[query['table']] ) {
+            throw new Error(`参数table不能为空，或者当前数据库没有对应table，请确认table的准确`)
+            return;
+        }
+        let model = db[query['table']]
+        let conditions = {}
+        conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
+        conditions['attributes'] = query.hasOwnProperty('attrs') ? JSON.parse(query['attrs']) : ['*']
+        conditions['raw'] = true
+        if ( query['order'] ) conditions['order'] = query['order']
+        if ( query['group'] ) conditions['group'] = query['group']
+        if ( query['page'] || query['length'] ) {
+            let page = query['page'] || 1
+            let length = query['length'] || 10000
+            let limit = parseInt(length)
+            let offset = (parseInt(page) - 1) * length;
+            conditions['offset'] = offset
+            conditions['limit'] = limit
+        }
 
-        // let {db,table,attributes,where} = this.ctx.query
+        let res = await model.findAll(conditions)
+        common.success(res)
+    }
+
+    async count () {
+
+        let query = this.ctx.query;
+        let db = this.ctx[query['db']] || this.ctx.SjResource
+        if ( !query.hasOwnProperty('table') || !db[query['table']] ) {
+            throw new Error(`参数table不能为空，或者当前数据库没有对应table，请确认table的准确`)
+            return;
+        }
+        let model = db[query['table']]
+        let attr = query['attrs'] || "*"
+        let conditions = {}
+        conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
+        conditions['attributes'] = [
+            [
+                this.ctx.app.Sequelize.fn('COUNT',this.ctx.app.Sequelize.col(attr)),
+                'count'
+            ]
+        ]
+        conditions['raw'] = true
+        let res = await model.findOne(conditions)
+        common.success(res['count'])
 
     }
 
@@ -34,12 +79,12 @@ class ApiController extends Controller {
         }
     }
 
-    async insert () {
+    async create () {
 
     }
 
-    async inserAll () {
-
+    async delete () {
+        
     }
 
 }

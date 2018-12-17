@@ -1,7 +1,8 @@
 
 const Container = require('./Container')
 
-class Common extends Container {
+
+class Common extends Container{
 
 	static deepCopy(obj) {
 		return JSON.parse(JSON.stringify(obj))
@@ -26,6 +27,20 @@ class Common extends Container {
 		return res;
 	}
 
+
+	// 字符串数字转换真正的数字 例如:1w=10000,1q=1000
+	static stringNumberFormat(stringNumber) {
+		if ( typeof stringNumber === 'number' ) return stringNumber;
+		if ( stringNumber.includes('w') || stringNumber.includes('W') ) {
+			return parseInt(stringNumber) * 10000;
+		}
+		if ( stringNumber.includes('q') || stringNumber.includes('Q') ) {
+			return parseInt(stringNumber) * 1000;
+		}
+		return parseInt(stringNumber);
+	}
+
+	// 把一个大的数组根据chunkSize分割成多个小数组
 	static sliceArrayList(datas=[],chunkSize=100) {
 		let dataSize = datas.length
 		if ( !Array.isArray(datas) ) {
@@ -69,6 +84,25 @@ class Common extends Container {
 			res[data[index]] = data
 		})
 		return this.deepCopy(res);
+	}
+
+	// 字符串第一个字母变为大写
+	static toUpperByFirstChar(targetString) {
+		if ( typeof targetString !== 'string' ) {
+			throw new Error('Common:toUpperByHeadChar; 参数必须是字符串类型');
+		}
+		let stringHead = targetString[0]
+		let stringRest = targetString.slice(1);
+		stringHead = stringHead.toUpperCase()
+		return stringHead + stringRest
+	}
+
+	static awaitTime(time) {
+		return new Promise((resolve,reject)=>{
+			setTimeout(()=>{
+				resolve(true)
+			},time)
+		})
 	}
 
 }
