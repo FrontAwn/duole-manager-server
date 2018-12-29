@@ -18,7 +18,15 @@ class DuAppService extends Service {
 	}
 
 	async updateSkus(skus) {
-		let datas = await this.getAllSkus(['sku']);
+		let datas = await this.DuSkusModel.findAll({
+			raw:true,
+			attributes:['sku'],
+			where:{
+				id:{
+					"$gt":0
+				}
+			}
+		})
 
 		let totalSkus = [] 
 
