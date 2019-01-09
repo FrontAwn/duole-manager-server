@@ -15,33 +15,30 @@ class DailyReportService extends Service {
 
 	// 根据周来筛选日报现货数据信息
 	async getCurrentStockBeforeWeekByNum(num,sku=null) {
-		var lastDate = null
-		await this.DailyReportDB.scope(async conn=>{
-				var res = await this.DailyReportDB.get(
-					'daily_report_current_stock',
-					{
-						'columns':['create_time'],
-						// 'where':{
-						// 	'sku':{
-						// 		'equals':sku
-						// 	},
-						// },
-						'where':{
-							'id':{
-								'greaterThen':0
-							},
-						},
-						'child':'order by create_time desc',
-					},
-					conn
-				)
-				if ( res.hasOwnProperty('create_time') ) {
-					lastDate = res['create_time']
-				}
-			}
-		)
+		// var lastDate = null
+		// await this.DailyReportDB.scope(async conn=>{
+		// 		var res = await this.DailyReportDB.get(
+		// 			'daily_report_current_stock',
+		// 			{
+		// 				'columns':['create_time'],
+		// 				// 'where':{
+		// 				// 	'sku':{
+		// 				// 		'equals':sku
+		// 				// 	},
+		// 				// },
+		// 				'child':'order by create_time desc',
+		// 			},
+		// 			conn
+		// 		)
+		// 		if ( res.hasOwnProperty('create_time') ) {
+		// 			lastDate = res['create_time']
+		// 		}
+		// 	}
+		// )
 
-		if ( lastDate === null )  return {}
+		// if ( lastDate === null )  return {}
+
+		var lastDate = await this.RedisDB.get('DaliyReportCurrentStockBySkuCreateTime');
 
 		var redisKey = `DaliyReportCurrentStockBySku:${sku}`
 		var cacheIsExists = await this.RedisDB.exists(redisKey)
