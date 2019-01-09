@@ -194,6 +194,9 @@ class DailyReportService extends Service {
 		})
 
 		console.log('save done');
+		var redisKey = `DaliyReportCurrentStockBySkuCreateTime`
+		await redis.set(redisKey,createTime);
+		console.log(createTime)
 		return {"status":"success"};
 	}
 
