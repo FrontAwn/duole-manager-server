@@ -26,6 +26,11 @@ class DailyReportService extends Service {
 						// 		'equals':sku
 						// 	},
 						// },
+						'where':{
+							'id':{
+								'greaterThen':0
+							},
+						},
 						'child':'order by create_time desc',
 					},
 					conn
@@ -37,7 +42,7 @@ class DailyReportService extends Service {
 		)
 
 		if ( lastDate === null )  return {}
-			
+
 		var redisKey = `DaliyReportCurrentStockBySku:${sku}`
 		var cacheIsExists = await this.RedisDB.exists(redisKey)
 		if( cacheIsExists ) {
