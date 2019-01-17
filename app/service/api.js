@@ -1,34 +1,32 @@
 const Service = require('egg').Service
 var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
-var redis = require('../utils/redis')
-var Common = require('../core/Common')
-
 
 class ApiService extends Service {
 
-	constructor(ctx) {
-		super(ctx)
-		this.RedisDB = redis.getDatabase('default').getOriginal()
-	}
+	async finds(query) {
 
-	async finds(params) {
+        if ( !query.hasOwnProperty('db') ) {
+            throw new Error(`参数db不能为空，请传入对应数据库名称`)
+            return;
+        }
 
-        let db = this.ctx[params['db']] || this.ctx.SjResource
-        if ( !params.hasOwnProperty('table') || !db[params['table']] ) {
+        let db = query['db']
+
+        if ( !query.hasOwnProperty('table') || !db[query['table']] ) {
             throw new Error(`参数table不能为空，或者当前数据库没有对应table，请确认table的准确`)
             return;
         }
-        let model = db[params['table']]
+        let model = db[query['table']]
         let conditions = {}
-        conditions['where'] = params.hasOwnProperty('where') ? params['where'] : {id:{'$gt':0}}
-        conditions['attributes'] = params.hasOwnProperty('attrs') ? params['attrs'] : ['*']
+        conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
+        conditions['attributes'] = query.hasOwnProperty('attrs') ? JSON.parse(query['attrs']) : ['*']
         conditions['raw'] = true
-        if ( params['order'] ) conditions['order'] = params['order']
-        if ( params['group'] ) conditions['group'] = params['group']
-        if ( params['page'] || params['length'] ) {
-            let page = params['page'] || 1
-            let length = params['length'] || 10000
+        if ( query['order'] ) conditions['order'] = query['order']
+        if ( query['group'] ) conditions['group'] = query['group']
+        if ( query['page'] || query['length'] ) {
+            let page = query['page'] || 1
+            let length = query['length'] || 10000
             let limit = parseInt(length)
             let offset = (parseInt(page) - 1) * length;
             conditions['offset'] = offset
@@ -36,20 +34,27 @@ class ApiService extends Service {
         }
 
         let res = await model.findAll(conditions)
-        return res
+        return res;
 
 	}
 
-	async count(params) {
-        let db = this.ctx[params['db']] || this.ctx.SjResource
-        if ( !params.hasOwnProperty('table') || !db[params['table']] ) {
+	async count(query) {
+
+		if ( !query.hasOwnProperty('db') ) {
+            throw new Error(`参数db不能为空，请传入对应数据库名称`)
+            return;
+        }
+
+        let db = query['db']
+
+        if ( !query.hasOwnProperty('table') || !db[query['table']] ) {
             throw new Error(`参数table不能为空，或者当前数据库没有对应table，请确认table的准确`)
             return;
         }
-        let model = db[params['table']]
-        let attr = params['attrs'] || "*"
+        let model = db[query['table']]
+        let attr = query['attrs'] || "*"
         let conditions = {}
-        conditions['where'] = params.hasOwnProperty('where') ? params['where'] : {id:{'$gt':0}}
+        conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
         conditions['attributes'] = [
             [
                 this.ctx.app.Sequelize.fn('COUNT',this.ctx.app.Sequelize.col(attr)),
@@ -58,24 +63,14 @@ class ApiService extends Service {
         ]
         conditions['raw'] = true
         let res = await model.findOne(conditions)
-		return res;
-	}
 
-	async update(params) {
+        return res['count'];
 
 	}
 
-	async delete(params) {
-
-	}
-
-	async create(params) {
-
-	}
-	
 }
 
-module.exports = ApiService;
+module.exports = ApiService
 
 
 

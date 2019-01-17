@@ -1,46 +1,25 @@
 const Service = require('egg').Service
 var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
-var mysql = require('../utils/mysql.js')
 var date = require('../utils/date.js')
-var redis = require('../utils/redis')
 
 class DailyReportService extends Service {
 
 	constructor(ctx) {
 		super(ctx)
-		this.DailyReportDB = mysql.getDatabase('sj_resource');
-		this.RedisDB = redis.getDatabase('default').getOriginal()
+		this.DailyReportModel = this.ctx.SjResource.DailyReportCurrentStock
+		this.SjResourceDB = this.ctx.SjResource
+		this.RedisDB = this.ctx.app.redis.get('default')
 	}
 
 	// 根据周来筛选日报现货数据信息
 	async getCurrentStockBeforeWeekByNum(num,sku=null) {
-		// var lastDate = null
-		// await this.DailyReportDB.scope(async conn=>{
-		// 		var res = await this.DailyReportDB.get(
-		// 			'daily_report_current_stock',
-		// 			{
-		// 				'columns':['create_time'],
-		// 				// 'where':{
-		// 				// 	'sku':{
-		// 				// 		'equals':sku
-		// 				// 	},
-		// 				// },
-		// 				'child':'order by create_time desc',
-		// 			},
-		// 			conn
-		// 		)
-		// 		if ( res.hasOwnProperty('create_time') ) {
-		// 			lastDate = res['create_time']
-		// 		}
-		// 	}
-		// )
-
-		// if ( lastDate === null )  return {}
 
 		var lastDate = await this.RedisDB.get('DaliyReportCurrentStockBySkuCreateTime');
 
 		var redisKey = `DaliyReportCurrentStockBySku:${sku}`
+
+		// 判断缓存
 		var cacheIsExists = await this.RedisDB.exists(redisKey)
 		if( cacheIsExists ) {
 			var cacheLastDate = await this.RedisDB.hget(redisKey,'lastDate')
@@ -54,43 +33,37 @@ class DailyReportService extends Service {
 			}
 		}
 
+		// 缓存匹配失败，进行mysql查询
 		var dates = date.getBeforeWeekByNum(num,lastDate)
 		var wheres = {}
 		for( let i in dates ) {
 			let date = dates[i]
 			wheres[i] = {
-				'columns':[
-					'total',
-					'maori',
-					'brand_price',
-					'retail',
-					'retail_price',
-					'cost_info'
-				],
-				'where':{
-					'sku':{
-						'equals':sku
-					},
-					'create_time':{
-						'between':[date['sTime'],date['eTime']]
-					},
-					'total':{
-						'greaterThen':0
-					},
-				}
+				'sku':sku,
+				'create_time':{
+					'$between':[date['sTime'],date['eTime']]
+				},
+				'total':{
+					'$gt':0
+				},
 			}
 		}
 
 		var datas = {}
 		datas['lastDate'] = moment(lastDate).format('YYYY-MM-DD');
-		await this.DailyReportDB.scope(async conn=>{
-			for (let i in wheres) {
-				let conditions = wheres[i]
-				datas[i] = await this.DailyReportDB.finds('daily_report_current_stock',conditions,conn);
-			}
-			debug(redisKey,'needCacheKey')
-			debug('disk','status')
-		})
+
+		for (let i in wheres) { 
+			let where = wheres[i]
+			datas[i] = await this.DailyReportModel.findAll({
+				raw:true,
+				attributes:['total','maori','brand_price','retail','retail_price','cost_info'],
+				where,
+			})
+		}
+		debug(redisKey,'needCacheKey')
+		debug('disk','status')
+
+		// 缓存储存
 		let dataCacheStrings = JSON.stringify(datas);
 		await this.RedisDB.hmset(redisKey,{
 			'lastDate':lastDate,
@@ -104,7 +77,11 @@ class DailyReportService extends Service {
 
 	// 日报“现货”表存储
 	async handleDailyReportFromCurrentStock(workboot,replaceStatus=true,createTime=null) {
-		await this.DailyReportDB.scope(async conn=>{
+
+
+		// 开始分析excel数据
+
+		await this.SjResourceDB.transaction(async t=>{
 
 			var datas = workboot.buildedDatas;
 			var length = datas.length;
@@ -115,15 +92,19 @@ class DailyReportService extends Service {
 				createTime = moment(createTime).format("YYYY-MM-DD HH:mm:ss")
 			}
 			var updateTime = moment().format("YYYY-MM-DD HH:mm:ss")
+
+			// 删除当天重复的日报数据
 			if ( replaceStatus ) {
-				await this.DailyReportDB.remove(
-					'daily_report_current_stock',
-					{
+				await this.DailyReportModel.destroy({
+					where:{
 						'create_time':{
-							'like': `${moment().format("YYYY-MM-DD")}%`,
+							"$like": `${moment().format("YYYY-MM-DD")}%`
 						}
-					},conn)	
+					},
+					transaction:t
+				})
 			}
+
 			while ( length > 0 ) {
 		    	var chunks = datas.splice(0,chunkNumber);
 		    	for( let i in chunks) {
@@ -183,18 +164,27 @@ class DailyReportService extends Service {
 		    		chunks[i]['cost_info'] = JSON.stringify(chunks[i]['cost_info'])
 		    		chunks[i]['distribution_info'] = JSON.stringify(chunks[i]['distribution_info'])
 		    	}
-
-				await this.DailyReportDB.insertAll('daily_report_current_stock',chunks,conn);
+				await this.DailyReportModel.bulkCreate(chunks,{
+					transaction:t
+				})
 			    length = datas.length;
 		    }
-
 		})
 
-		console.log('save done');
+		// 缓存日报最新日期
 		var redisKey = `DaliyReportCurrentStockBySkuCreateTime`
-		await this.RedisDB.set(redisKey,createTime);
-		console.log(createTime)
+		var lastTime = await this.DailyReportModel.findOne({
+			attributes:['create_time'],
+			where:{
+				'id':{
+					'$gt':0
+				}
+			},
+			order:[['create_time',"DESC"]],
+		})
+		await this.RedisDB.set(redisKey,lastTime['create_time']);
 		return {"status":"success"};
+		
 	}
 
 

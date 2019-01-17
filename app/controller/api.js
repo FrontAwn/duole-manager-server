@@ -1,4 +1,4 @@
-    const Controller = require('egg').Controller;
+const Controller = require('egg').Controller;
 const path = require('path');
 var common = require('../utils/utils').common
 var moment = require('moment')

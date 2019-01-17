@@ -1,10 +1,5 @@
 'use strict';
 
-exports.mysql = {
-  enable: true,
-  package: 'egg-mysql',
-};
-
 exports.multipart = {
 	enable:false,
 	package:'egg-multipart'

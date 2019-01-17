@@ -3,8 +3,6 @@ const Controller = require('egg').Controller;
 const debug = require('../utils/utils').common.debug
 const DateFunc = require('../utils/date.js')
 var date = require('../utils/date.js')
-var mysql = require('../utils/mysql.js')
-var redis = require('../utils/redis.js')
 
 class TestController extends Controller {
 

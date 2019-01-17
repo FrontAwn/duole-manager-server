@@ -3,43 +3,22 @@
 module.exports = appInfo => {
     const config = exports = {};
 
-    config.mysql = {
-      clients: {
-
-        sj_resource: {
-          host: 'localhost',
-          port: '3306',
-          user: 'root',
-          password: '123456',
-          database: 'sj-resource',
-        }, 
-               
-      },
-
-      default: {
-
-      },
-      app: true,
-      agent: false,
-    };  
-
-
     config.sequelize = {
         datasources:[
-            // {
-            //     dialect: 'mysql', 
-            //     database: 'existing-stock',
-            //     host: 'localhost',
-            //     port: '3306',
-            //     username: 'root',
-            //     password: '123456',
-            //     delegate: 'ExistingStock',
-            //     baseDir:'model/existing-stock',
-            //     define: {
-            //         timestamps:false,
-            //         freezeTableName: true,
-            //     },
-            // },
+            {
+                dialect: 'mysql', 
+                database: 'sj_nike_stock',
+                host: 'localhost',
+                port: '3306',
+                username: 'root',
+                password: '123456',
+                delegate: 'SjNikeStock',
+                baseDir:'model/sj-nike-stock',
+                define: {
+                    timestamps:false,
+                    freezeTableName: true,
+                },
+            },
 
             {
                 dialect: 'mysql', 

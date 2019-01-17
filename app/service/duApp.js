@@ -1,7 +1,6 @@
 const Service = require('egg').Service
 var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
-var redis = require('../utils/redis')
 var Common = require('../core/Common')
 const Container = require('../core/Container.js');
 const Excel = require('../core/Excel.js');
@@ -12,7 +11,7 @@ class DuAppService extends Service {
 
 	constructor(ctx) {
 		super(ctx)
-		this.RedisDB = redis.getDatabase('default').getOriginal()
+		this.RedisDB = this.ctx.app.redis.get('default')
 		this.DuSkusModel = this.ctx.SjResource.DuSkus;
 		this.DuSkuDetailModel = this.ctx.SjResource.DuSkuDetail;
 	}
