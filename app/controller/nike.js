@@ -15,12 +15,11 @@ class NikeController extends Controller {
 	}
 
 	async getSkuInfo() {
-		// let {sku} = this.ctx.query
 		await this.service.nike.getHeader();
 	}
 
 	async exportStock() {
-		await cmd("node",['/node/duole-erp-cli-local/nikeToXls.js'],{maxBuffer:200*1024*1024});
+		await cmd("node",['/node/duole-erp-cli/nikeToXls.js'],{maxBuffer:200*1024*1024});
 		let excelBuffer = await readFile("/node/duole-erp-cli-local/excel/output/库存.xlsx")
 		let currentDayDate = moment().format('YYYYMMDD');
 		let excelName = `Nike库存${currentDayDate}.xlsx`
