@@ -31,7 +31,8 @@ module.exports = app => {
   // www.nike.net
   router.get('/nike/getChangeList',controller.nike.getChangeList)
   router.get('/nike/getSkuInfo',controller.nike.getSkuInfo)
-  router.get('/nike/exportStock',controller.nike.exportStock)
+  router.get('/nike/execGenerateStockCommand',controller.nike.execGenerateStockCommand)
+  router.get('/nike/downloadStockExcelFile',controller.nike.downloadStockExcelFile)
   
   
 
