@@ -17,6 +17,8 @@ module.exports = app => {
   router.get('/dailyReport/handleDailyReportFromCurrentStock', controller.dailyReport.handleDailyReportFromCurrentStock);
   // 根据sku获得近4周每周日报现货的数据
   router.get('/dailyReport/getBeforeFrouWeekCurrentStockBySku', controller.dailyReport.getBeforeFrouWeekCurrentStockBySku);
+
+
   //导出淘宝店铺商品excel表
   router.get('/taobao/exportTaobaoProductList', controller.taobao.exportTaobaoProductList);
 
@@ -25,6 +27,13 @@ module.exports = app => {
   //导出毒app抓取的数据
   router.get('/duApp/exportCurrentDayDetails',controller.duApp.exportCurrentDayDetails)
   router.get('/duApp/exportHistoryDetails',controller.duApp.exportHistoryDetails)
+
+  // www.nike.net
+  router.get('/nike/getChangeList',controller.nike.getChangeList)
+  router.get('/nike/getSkuInfo',controller.nike.getSkuInfo)
+  router.get('/nike/exportStock',controller.nike.exportStock)
+  
+  
 
 
   // 大文件上传操作

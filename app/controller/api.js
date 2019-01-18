@@ -17,7 +17,7 @@ class ApiController extends Controller {
         conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
         conditions['attributes'] = query.hasOwnProperty('attrs') ? JSON.parse(query['attrs']) : ['*']
         conditions['raw'] = true
-        if ( query['order'] ) conditions['order'] = query['order']
+        if ( query['order'] ) conditions['order'] = JSON.parse(query['order']);
         if ( query['group'] ) conditions['group'] = query['group']
         if ( query['page'] || query['length'] ) {
             let page = query['page'] || 1
