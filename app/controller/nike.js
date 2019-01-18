@@ -35,29 +35,15 @@ class NikeController extends Controller {
 	// }
 
 	async execGenerateStockCommand() {
-		let execPath = "/node/duole-erp-cli/nikeToXls.js"
-		// let execPath = "/node/duole-erp-cli-local/nikeToXls.js"
-		let execCmd = "node"
-		let res = await execFile(execCmd,[execPath],{
-			cwd:"/node/duole-erp-cli-local",
+		let filePath = "/node/duole-erp-cli"
+		// let filePath = "/node/duole-erp-cli-local"
+		let fileName = "nikeToXls.js"
+		let res = await exec(`cd ${filePath} && node ${fileName}`,{
 			maxBuffer:200*1024*1024
-		});
+		})
 		common.success({
 			status:true
 		})
-		// let stdout = ""
-		// let stderr = ""
-		// res.stdout.on('data',data=>{
-		// 	stdout += data
-		// })
-		// res.stderr.on('data',data=>{
-		// 	stderr += data
-		// })
-		// res.on('close',code=>{
-		// 	console.log(stdout)
-		// 	console.log(stderr)
-			
-		// })
 	}
 
 	async downloadStockExcelFile() {
