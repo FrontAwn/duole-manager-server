@@ -11,7 +11,7 @@ class ApiService extends Service {
             return;
         }
 
-        let db = query['db']
+        let db = this.ctx[query['db']]
 
         if ( !query.hasOwnProperty('table') || !db[query['table']] ) {
             throw new Error(`参数table不能为空，或者当前数据库没有对应table，请确认table的准确`)
@@ -22,7 +22,7 @@ class ApiService extends Service {
         conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
         conditions['attributes'] = query.hasOwnProperty('attrs') ? JSON.parse(query['attrs']) : ['*']
         conditions['raw'] = true
-        if ( query['order'] ) conditions['order'] = query['order']
+        if ( query['order'] ) conditions['order'] = JSON.parse(query['order'])
         if ( query['group'] ) conditions['group'] = query['group']
         if ( query['page'] || query['length'] ) {
             let page = query['page'] || 1
@@ -45,14 +45,15 @@ class ApiService extends Service {
             return;
         }
 
-        let db = query['db']
+        let db = this.ctx[query['db']]
 
         if ( !query.hasOwnProperty('table') || !db[query['table']] ) {
             throw new Error(`参数table不能为空，或者当前数据库没有对应table，请确认table的准确`)
             return;
         }
         let model = db[query['table']]
-        let attr = query['attrs'] || "*"
+        // let attr = query['attrs'] ? JSON.parse(query['attrs']) : "*";
+        let attr = "*";
         let conditions = {}
         conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
         conditions['attributes'] = [

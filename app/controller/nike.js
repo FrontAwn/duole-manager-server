@@ -14,7 +14,12 @@ const spawn = child_process.spawn;
 class NikeController extends Controller {
 
 	async getChangeList() {
-
+		let ls = await this.service.api.finds(this.ctx.query);
+		let count = await this.service.api.count(this.ctx.query);
+		this.ctx.body = {
+			count,
+			ls
+		}
 	}
 
 	async getSkuInfo() {
