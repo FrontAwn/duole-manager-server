@@ -1,6 +1,6 @@
 const Service = require('egg').Service;
 const path = require('path')
-const debug = require('../utils/utils').common.debug;
+const debug = require('../utils').common.debug;
 const promisify = require("util").promisify
 const exec = require("child_process").exec
 const cmd = promisify(exec)

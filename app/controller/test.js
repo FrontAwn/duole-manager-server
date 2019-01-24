@@ -1,8 +1,6 @@
 'use strict';
 const Controller = require('egg').Controller;
-const debug = require('../utils/utils').common.debug
-const DateFunc = require('../utils/date.js')
-var date = require('../utils/date.js')
+const debug = require('../utils').common.debug
 
 class TestController extends Controller {
 

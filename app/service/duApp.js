@@ -1,9 +1,9 @@
 const Service = require('egg').Service
-var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
-var Common = require('../core/Common')
-const Container = require('../core/Container.js');
-const Excel = require('../core/Excel.js');
+var common = require('../utils').common
+var debug = common.debug
+const container = require('../utils').container
+const excel = require('../utils').excel;
 
 const EXCEPT_SKU = 3
 
@@ -35,7 +35,7 @@ class DuAppService extends Service {
 
 		let newSkusCount = 0
 
-		let skusByIndex = Common.indexBy(skus,'sku');
+		let skusByIndex = common.indexBy(skus,'sku');
 
 		let newSkus = []
 
@@ -96,10 +96,10 @@ class DuAppService extends Service {
                 })
             }
         }
-        let templatePath = Container.get('paths')['templates']
+        let templatePath = container.get('paths')['templates']
         let tamplateName = '毒app抓取数据_template.xlsx'
         let templateFile = templatePath+'/'+tamplateName
-        let excelBuffer = await Excel.getRenderExcelBuffer(templateFile,datas)
+        let excelBuffer = await excel.getExcelBuffer(templateFile,datas)
         return excelBuffer;
 	}
 

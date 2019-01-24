@@ -1,6 +1,5 @@
 const Controller = require('egg').Controller;
 const path = require('path');
-var common = require('../utils/utils').common
 var moment = require('moment')
 
 class ApiController extends Controller {
@@ -29,7 +28,7 @@ class ApiController extends Controller {
         }
 
         let res = await model.findAll(conditions)
-        common.success(res)
+        this.ctx.body = {data:res}
     }
 
     async count () {
@@ -52,7 +51,8 @@ class ApiController extends Controller {
         ]
         conditions['raw'] = true
         let res = await model.findOne(conditions)
-        common.success(res['count'])
+        this.ctx.body = {data:res['count']}
+
 
     }
 
@@ -73,19 +73,19 @@ class ApiController extends Controller {
             count = res.length
         })
         if ( count === 1 ) {
-            common.success({'status':'更新成功'})
+            this.ctx.body = {data:{'status':'更新成功'}}
         } else {
-            common.error({'status':'更新失败'})
+            this.ctx.body = {data:{'status':'更新失败'}}
         }
     }
 
-    async create () {
+    // async create () {
 
-    }
+    // }
 
-    async delete () {
+    // async delete () {
         
-    }
+    // }
 
 }
 

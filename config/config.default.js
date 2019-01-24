@@ -36,13 +36,24 @@ module.exports = appInfo => {
     config.redis = {
       clients: {
         'default':{
-          port: 6379,          // Redis port
-          host: '127.0.0.1',   // Redis host
+          port: 6379,   
+          host: '127.0.0.1',
           password: 'auth',
           db: 0,
         }
       },
     }
+
+    // config.redis = {
+    //   clients: {
+    //     'default':{
+    //       port: 6379,   
+    //       host: '192.168.1.121',
+    //       password: 'auth',
+    //       db: 0,
+    //     }
+    //   },
+    // }
 
     return config;
 };

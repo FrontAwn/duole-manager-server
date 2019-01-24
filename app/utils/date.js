@@ -1,5 +1,5 @@
 const moment = require('moment')
-const debug = require('./utils').common.debug
+const debug = require('./common').debug
 
 exports.getDay = ()=>{
   let startTime = "00:00:00"

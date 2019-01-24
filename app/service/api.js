@@ -1,5 +1,4 @@
 const Service = require('egg').Service
-var debug = require('../utils/utils').common.debug;
 var moment = require('moment')
 
 class ApiService extends Service {
@@ -68,6 +67,39 @@ class ApiService extends Service {
         return res['count'];
 
 	}
+
+
+    async update (query) {
+        let {db,table,content,where} = query
+        let database = this.ctx[db]
+        let model = this.ctx[db][table]
+        let updateTime = moment().format('YYYY-MM-DD HH:mm:ss');
+        content = JSON.parse(content)
+        where = JSON.parse(where)
+        content['update_time'] = updateTime;
+        let count = 0
+        await database.transaction(async t=>{
+            let res = await model.update(content,{
+                where,
+                transaction:t
+            })
+            count = res.length
+        })
+        if ( count === 1 ) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+
+    async create(query) {
+
+    }
+
+    async delete(query) {
+
+    }
 
 }
 

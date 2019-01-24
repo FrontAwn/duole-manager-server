@@ -1,10 +1,7 @@
 const Controller = require('egg').Controller;
 const path = require('path');
-const common = require('../utils/utils').common
-const container = require('../core/Container.js')
-const file = require('../core/File.js')
+const container = require('../utils').container
 const moment = require('moment')
-const ejsexcel = require('ejsexcel');
 const fs = require('fs')
 const urlencode = require('urlencode');
 
@@ -22,11 +19,13 @@ class DuAppController extends Controller {
         
         let skusCountDetail = await this.service.duApp.updateSkus(targetSkus)
 
-        common.success({
-            'new':skusCountDetail['newSkusCount'],
-            'exists':skusCountDetail['existsSkusCount']
-        })
-
+        this.ctx.body = {
+            code:200,
+            data:{
+                'new':skusCountDetail['newSkusCount'],
+                'exists':skusCountDetail['existsSkusCount']    
+            }
+        }
     }
 
     async exportCurrentDayDetails() {

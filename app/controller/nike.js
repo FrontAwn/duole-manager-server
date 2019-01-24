@@ -1,5 +1,4 @@
 const Controller = require('egg').Controller;
-const common = require('../utils/utils').common
 const promisify = require("util").promisify
 const fs = require("fs")
 const child_process = require("child_process")
@@ -81,9 +80,7 @@ class NikeController extends Controller {
 		let res = await exec(`cd ${filePath} && node ${fileName}`,{
 			maxBuffer:200*1024*1024
 		})
-		common.success({
-			status:true
-		})
+		this.ctx.body = true
 	}
 
 	// 把已经导出的nike库存下载到本地
