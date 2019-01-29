@@ -17,7 +17,7 @@ class DailyController extends Controller {
   }
 
   // 得到近4周每周的现货日报数据
-  async getExistingLsByMonth() {
+  async getExistingLsByWeek() {
     let datas = {}
     let {sku} = this.ctx.query
     datas = await this.service.daily.getExistingLsByWeek(4,sku);
