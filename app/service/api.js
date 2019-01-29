@@ -18,10 +18,10 @@ class ApiService extends Service {
         }
         let model = db[query['table']]
         let conditions = {}
-        conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
-        conditions['attributes'] = query.hasOwnProperty('attrs') ? JSON.parse(query['attrs']) : ['*']
+        conditions['where'] = query.hasOwnProperty('where') ? query['where'] : {id:{'$gt':0}}
+        conditions['attributes'] = query.hasOwnProperty('attrs') ? query['attrs'] : ['*']
         conditions['raw'] = true
-        if ( query['order'] ) conditions['order'] = JSON.parse(query['order'])
+        if ( query['order'] ) conditions['order'] = query['order']
         if ( query['group'] ) conditions['group'] = query['group']
         if ( query['page'] || query['length'] ) {
             let page = query['page'] || 1
@@ -54,7 +54,7 @@ class ApiService extends Service {
         // let attr = query['attrs'] ? JSON.parse(query['attrs']) : "*";
         let attr = "*";
         let conditions = {}
-        conditions['where'] = query.hasOwnProperty('where') ? JSON.parse(query['where']) : {id:{'$gt':0}}
+        conditions['where'] = query.hasOwnProperty('where') ? query['where'] : {id:{'$gt':0}}
         conditions['attributes'] = [
             [
                 this.ctx.app.Sequelize.fn('COUNT',this.ctx.app.Sequelize.col(attr)),

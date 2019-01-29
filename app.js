@@ -19,6 +19,7 @@ module.exports = app => {
 	container.add('utils',path.join(home,'/app/utils'),paths)
 	container.add('middleware',path.join(home,'/app/middleware'),paths)
 	container.add('public',path.join(home,'/app/public'),paths)
+	container.add('static',path.join(home,'/app/static'),paths)
 	container.add('core',path.join(home,'/app/core'),paths)
 	container.add('extend',path.join(home,'/app/extend'),paths)
 	container.add('schedule',path.join(home,'/app/schedule'),paths)

@@ -12,7 +12,8 @@ module.exports = app => {
 
   // 日报
   router.get('/daily/handleExistingTable', controller.daily.handleExistingTable); //处理日报“现货表”并保存数据
-  router.get('/daily/getExistingLsByWeek', controller.daily.getExistingLsByWeek); //得到4周日报数据
+  router.get('/daily/getExistingLsByMonth', controller.daily.getExistingLsByMonth); //得到4周日报数据
+  router.get('/daily/getExistingExtraBySkus',controller.daily.getExistingExtraBySkus)
 
   // 毒app
   router.post('/duApp/saveSkus',controller.duApp.saveSkus); // 存储duapp货号
@@ -31,5 +32,8 @@ module.exports = app => {
   router.post('/upload/writeChunks',controller.upload.writeChunks)
   router.get('/upload/mergeChunks',controller.upload.mergeChunks)
 
+
+  // 静态页面
+  router.get('/static/tmallDailyPage',controller.static.tmallDailyPage)
 
 };
