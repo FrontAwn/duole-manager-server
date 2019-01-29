@@ -3,7 +3,18 @@
 	<div id="daily-shadow-box" @click="closeSkuDetail()"></div>
 
 	<div id="daily-content-box">
-		<div id="daily-content-title-box"></div>
+		<div id="daily-content-title-box">
+			<div style="width: 50%;display: flex;justify-content: space-between;margin-left: 14px;">
+				<div class="title-tag-class">总库存: {{currentExtra['cost_amount']}}</div>
+				<div class="title-tag-class">牌价: {{currentExtra['brand_price']}}</div>
+				<div class="title-tag-class">成本折扣: {{currentExtra['cost_zhekou']}}</div>
+				<div class="title-tag-class">零售毛利: {{currentExtra['maori_rate']}}</div>
+			</div>
+			<div style="width: 50%;display:flex;justify-content: flex-end;align-items: center;margin-right: 14px;">	
+				<div class="title-tag-class">日报最新数据日期: {{lastDate}}</div>
+			</div>
+			
+		</div>
 		<div id="daily-content-core-box">
 
 			<div style="display: flex;width: 100%;">
@@ -22,12 +33,10 @@
 						v-if="type !== '日期'"
 					>
 						<div 
-							style="display: flex;flex-grow:1;justify-content: center;align-items: center;" 
-							:style="type==='库存' ? {'display':'flex','width':'80px','justifyContent':'center','alignItems':'center'} : {'display':'flex','width':'75px','justifyContent':'center','alignItems':'center'}"
 							v-for="opt in children"
-							:class="getChannelClass(opt)"
+							:class="getChannelClass(type)"
 						>
-							<span style="color:#FFFFFF">{{opt}}</span>
+							<span style="">{{opt}}</span>
 						</div>
 					</div>
 				</div>
@@ -38,50 +47,59 @@
 				style="width: 100%;display: flex;"
 				v-for="(content,date) in currentSku"
 			>
-				<div style="width: 108px;display: flex;justify-content: center;height:30px;align-items: center;font-size: 14px;font-weight: bold;border-bottom: 1px solid #5D6B77;">
+				<div style="width: 109px;display: flex;justify-content: center;height:30px;align-items: center;font-size: 14px;font-weight: bold;border-bottom: 1px solid #5D6B77;">
 					{{date}}
 				</div>
 
-				<div class="stock-column-class sj-font-class">
+				<div class="sj-content-class">
 					{{content['sj_info']['sj_stock']}}
 				</div>
-				<div class="stock-column-class hj-font-class">
+
+				<div class="sj-content-class">
+					{{content['sj_info']['sj_sales_count']}}
+				</div>
+
+				<div class="sj-content-class">
+					{{content['sj_info']['sj_maori_rate']}}
+				</div>
+
+
+				<div class="hj-content-class">
 					{{content['hj_info']['hj_stock']}}
 				</div>
 
-
-				<div class="sales-count-column-class sj-font-class">
-					{{content['sj_info']['sj_sales_count']}}
-				</div>
-				<div class="sales-count-column-class hj-font-class">
+				<div class="hj-content-class">
 					{{content['hj_info']['hj_sales_count']}}
 				</div>
-				<div class="sales-count-column-class gld-font-class">
+
+				<div class="hj-content-class">
+					{{content['hj_info']['hj_maori_rate']}}
+				</div>
+
+
+				<div class="gld-content-class">
 					{{content['gld_info']['gld_sales_count']}}
 				</div>
 
-				<div class="sales-count-column-class fx-font-class">
+				<div class="gld-content-class">
+					{{content['gld_info']['gld_maori_rate']}}
+				</div>
+
+				
+
+				<div class="fx-content-class">
 					{{content['distribution_info']['distribution']}}
 				</div>
 
+				<div class="fx-content-class">
+					{{content['distribution_info']['distribution_maori_rate']}}
+				</div>				
 
-				<div class="maori-column-class sj-font-class">
-					{{content['sj_info']['sj_maori']}}
-				</div>
-				<div class="maori-column-class hj-font-class">
-					{{content['hj_info']['hj_maori']}}
-				</div>
-				<div class="maori-column-class gld-font-class">
-					{{content['gld_info']['gld_maori']}}
-				</div>
-				<div class="maori-column-class fx-font-class">
-					{{content['distribution_info']['distribution_maori']}}
-				</div>
+
 			</div>
 
 		</div>
 
-		<div id="daily-content-fooler-box" style="height:15px;"></div>
 	</div>
 </div>
 
@@ -95,6 +113,12 @@
 		z-index:3000;
 	}
 
+	#daily-content-title-box {
+		width: 100%;
+		margin-top: 14px;
+		display: flex;
+	}
+
 	#daily-content-box{
 		position:fixed;
 		top:0;
@@ -106,6 +130,8 @@
 		z-index:9999;
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		flex-direction: column;
 	}
 	#daily-content-core-box {
 		width: 870px;
@@ -116,100 +142,124 @@
 		border-right:1px solid #5D6B77;
 	}
 
-	.date-column-class {
-		width: 110px;
-		border-bottom:1px solid #5D6B77;
-	}
-
 	.date-column-font-class {
 		height: 100%;
 	}
-
-	.type-column-class {
-		width: 300px;
-		border-left:1px solid #5D6B77;
-		border-bottom:1px solid #5D6B77;
-	}
-
-	.type-stock-column-class {
-		width: 160px;
-		border-left:1px solid #5D6B77;
-		border-bottom:1px solid #5D6B77;
-	}	
 
 	.type-column-font-class {
 		height:25px;
 		border-bottom:1px solid #5D6B77;
 	}
 
-	.hj-column-class {
-		background: #6FA6CD;
+	.date-title-class {
+		width: 110px;
+		border-bottom:1px solid #5D6B77;
 	}
 
-	.sj-column-class {
-		background: #F46565;
-	}
-
-	.gld-column-class {
-		background: #00C3B6;
-	}
-
-	.fenxiao-column-class {
-		background: #E9935F;
-	}
-
-	.stock-column-class {
-		width: 80px;
-		height: 30px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-		font-size:14px;
+	.sj-title-class {
+		width:222px;
 		border-left:1px solid #5D6B77;
-		border-bottom: 1px solid #5D6B77;
-		
-	}
-
-	.sales-count-column-class {
-		width: 75px;
-		height: 30px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-		font-size:14px;
-		border-left:1px solid #5D6B77;
-		border-bottom: 1px solid #5D6B77;
-		
-
-	}
-
-	.maori-column-class {
-		width: 75px;
-		height: 30px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-		font-size:14px;
-		border-left:1px solid #5D6B77;
-		border-bottom: 1px solid #5D6B77;
-		
-
-	}
-
-	.sj-font-class {
+		border-bottom:1px solid #5D6B77;
 		background:  #F46565;
 	}
-	.hj-font-class {
+
+	.hj-title-class {
+		width:222px;
+		border-left:1px solid #5D6B77;
+		border-bottom:1px solid #5D6B77;
 		background:  #6FA6CD;
+
 	}
-	.gld-font-class {
+
+	.gld-title-class {
+		width:158px;
+		border-left:1px solid #5D6B77;
+		border-bottom:1px solid #5D6B77;
 		background:  #00C3B6;
+
+
 	}
-	.fx-font-class {
+
+	.fx-title-class {
+		width:158px;
+		border-left:1px solid #5D6B77;
+		border-bottom:1px solid #5D6B77;
 		background:  #E9935F;
+	}
+	
+	.sj-content-class{
+		width: 74.5px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+		font-size:14px;
+		border-left:1px solid #5D6B77;
+		border-bottom: 1px solid #5D6B77;
+		background:  #F46565;
+
+	}
+
+	.hj-content-class{
+		width: 74.5px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+		font-size:14px;
+		border-left:1px solid #5D6B77;
+		border-bottom: 1px solid #5D6B77;
+		background:  #6FA6CD;
+
+	}
+
+	.gld-content-class{
+		width: 79px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+		font-size:14px;
+		border-left:1px solid #5D6B77;
+		border-bottom: 1px solid #5D6B77;
+		background:  #00C3B6;
+
+	}
+
+	.fx-content-class{
+		width: 79px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+		font-size:14px;
+		border-left:1px solid #5D6B77;
+		border-bottom: 1px solid #5D6B77;
+		background:  #E9935F;
+
+	}
+
+
+	.three-option-class {
+		width: 74px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.two-option-class{
+		width: 78.5px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.title-tag-class {
+		border:1px solid #414A52;
+		color:#414A52;
+		border-radius: 20px;
+		padding: 1px 5px 1px 5px;
+		font-size: 14px; 
 	}
 
 </style>

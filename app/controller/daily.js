@@ -40,7 +40,6 @@ class DailyController extends Controller {
         table:"DailyAmount",
         attrs:[
             'sku',
-            'total',
             'brand_price',
             'maori_rate',
             'sj_info',
@@ -61,7 +60,8 @@ class DailyController extends Controller {
         order:[["create_time","DESC"]]
     })
     this.ctx.body = {
-        data:datas
+        data:datas,
+        last:dateInfo['end']
     }
   }
 
