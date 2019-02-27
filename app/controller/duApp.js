@@ -8,22 +8,47 @@ const urlencode = require('urlencode');
 class DuAppController extends Controller {
 
     async saveSkus() {
-        let {skus} = this.ctx.request.body
-        skus = JSON.parse(skus)
-        let timer = moment().format('YYYY-MM-DD HH:mm:ss');
-        let targetSkus = [];
-        skus.forEach((sku,idx)=>{
-            let data = {sku,'create_time':timer}
-            targetSkus.push(data)
+        const DuappResource = this.ctx.DuappResource
+        const SelfProductList =  this.ctx.DuappResource.SelfProductList
+        let { skus } = this.ctx.request.body
+        let newSkus = JSON.parse(skus)
+        let allSkus = []
+        let hasSkus = []
+        let diffSkus = []
+        const createAt = moment().format("YYYY-MM-DD")
+        let res = await SelfProductList.findAll({
+            raw:true,
+            attributes:["sku"],
+            where:{
+                id:{
+                    "$gt":0
+                }
+            }
         })
-        
-        let skusCountDetail = await this.service.duApp.updateSkus(targetSkus)
-
+        res.forEach(content=>{
+            allSkus.push(content.sku)
+        })
+        newSkus.forEach(sku=>{
+            if ( allSkus.includes(sku) ) {
+                hasSkus.push(sku)
+            } else {
+                diffSkus.push({
+                    sku,
+                    "type":0,
+                    "create_at":createAt
+                })
+            }
+        })
+        if ( diffSkus.length > 0 ) {
+            await DuappResource.transaction(async t=>{
+                await SelfProductList.bulkCreate(diffSkus,{transaction:t})
+            })    
+        }
         this.ctx.body = {
             code:200,
             data:{
-                'new':skusCountDetail['newSkusCount'],
-                'exists':skusCountDetail['existsSkusCount']    
+                'new':diffSkus.length,
+                'exists':hasSkus.length    
             }
         }
     }

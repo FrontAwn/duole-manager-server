@@ -16,56 +16,6 @@ class DuAppService extends Service {
 		this.DuSkuDetailModel = this.ctx.SjResource.DuSkuDetail;
 	}
 
-	async updateSkus(skus) {
-		let datas = await this.DuSkusModel.findAll({
-			raw:true,
-			attributes:['sku'],
-			where:{
-				id:{
-					"$gt":0
-				}
-			}
-		})
-
-		let totalSkus = [] 
-
-		datas.forEach((data,idx)=>{
-			totalSkus.push(data['sku'])			
-		})
-
-		let newSkusCount = 0
-
-		let skusByIndex = common.indexBy(skus,'sku');
-
-		let newSkus = []
-
-		let existsSkus = []
-
-		totalSkus.forEach((sku,idx)=>{
-			if ( skusByIndex.hasOwnProperty(sku) ) {
-				existsSkus.push(skusByIndex[sku])
-				Reflect.deleteProperty(skusByIndex,sku)
-			}
-		})
-
-		newSkus = Object.values(skusByIndex)
-
-		if ( newSkus.length !== 0 ) {
-			await this.ctx.SjResource.transaction(async t=>{
-				let res = await this.DuSkusModel.bulkCreate(newSkus,{transaction:t})
-				newSkusCount = res.length;
-			})
-		}
-
-		let existsSkusCount = existsSkus.length
-
-		// debug(newSkusCount,'newSkusCount')
-		// debug(existsSkusCount,'existsSkusCount')
-
-		return {newSkusCount,existsSkusCount};
-	}
-
-	
 	async exportDetails(conditions) {
 		let res = await this.DuSkuDetailModel.findAll({
 			raw:true,

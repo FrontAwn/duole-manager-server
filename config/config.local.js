@@ -5,20 +5,6 @@ module.exports = appInfo => {
 
     // config.sequelize = {
     //     datasources:[
-    //         // {
-    //         //     dialect: 'mysql', 
-    //         //     database: 'sj_nike_stock',
-    //         //     host: 'localhost',
-    //         //     port: '3306',
-    //         //     username: 'root',
-    //         //     password: '123456',
-    //         //     delegate: 'SjNikeStock',
-    //         //     baseDir:'model/sj-nike-stock',
-    //         //     define: {
-    //         //         timestamps:false,
-    //         //         freezeTableName: true,
-    //         //     },
-    //         // },
 
     //         {
     //             dialect: 'mysql', 
@@ -52,18 +38,19 @@ module.exports = appInfo => {
 
     //         {
     //             dialect: 'mysql', 
-    //             database: 'sj_nike_stock',
-    //             host: '192.168.1.121',
+    //             database: 'duapp-resource',
+    //             host: 'localhost',
     //             port: '3306',
-    //             username: 'song',
-    //             password: 'SongAbc12345',
-    //             delegate: 'SjNikeStock',
-    //             baseDir:'model/sj-nike-stock',
+    //             username: 'root',
+    //             password: '123456',
+    //             delegate: 'DuappResource',
+    //             baseDir:'model/duapp-resource',
     //             define: {
     //                 timestamps:false,
     //                 freezeTableName: true,
     //             },
     //         },
+
     //     ]
     // }
 
@@ -113,11 +100,24 @@ module.exports = appInfo => {
                     freezeTableName: true,
                 },
             },
+
+            {
+                dialect: 'mysql', 
+                database: 'duapp-resource',
+                host: '192.168.1.121',
+                port: '3306',
+                username: 'song',
+                password: 'SongAbc12345',
+                delegate: 'DuappResource',
+                baseDir:'model/duapp-resource',
+                define: {
+                    timestamps:false,
+                    freezeTableName: true,
+                },
+            },  
         ]
 
     }
-
-
 
     return config;
 };
