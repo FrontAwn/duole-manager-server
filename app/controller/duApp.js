@@ -4,6 +4,7 @@ const container = require('../utils').container
 const moment = require('moment')
 const fs = require('fs')
 const urlencode = require('urlencode');
+const excel = require("../utils").excel
 
 class DuAppController extends Controller {
 
@@ -53,40 +54,78 @@ class DuAppController extends Controller {
         }
     }
 
-    async exportCurrentDayDetails() {
-        let currentDayDate = moment().format('YYYY-MM-DD');
-        let condition = {
-            'update_time':currentDayDate
+    async getNeedDumpProductCount() {
+        let conditions = {
+            raw:true,
+            attributes:[[this.ctx.app.Sequelize.fn('COUNT',this.ctx.app.Sequelize.col("id")),'count']],
+            where:{
+                type:2
+            }
         }
-        let excelBuffer = await this.service.duApp.exportDetails(condition);
-        let downloadTimer = moment(currentDayDate).format('YYYYMMDD');
-        let excelName = `毒app${downloadTimer}.xlsx`
-        let downloadPath = container.get('paths')['downloads']
-        let excelFile = downloadPath+'/duapp/'+excelName
-        fs.writeFileSync(excelFile,excelBuffer)
-        let downloadFileName = urlencode(excelName,"UTF-8");
-        this.ctx.set({
-            'Content-Type': 'application/force-download; charset=utf-8',
-            'Content-Disposition': "attachment; filename* = UTF-8''"+downloadFileName,
-        })
-        this.ctx.body = excelBuffer;
+        let res = await this.service.duApp.getSelfProductList(conditions)
+        this.ctx.body = res[0]["count"]
     }
 
-    async exportHistoryDetails() {
-        let {date} = this.ctx.query
-        let condition = {
-            'update_time':date
+    async getAlreadyDumpProductConut() {
+        let { createAt } = this.ctx.query
+        let conditions = {
+            raw:true,
+            attributes:[[this.ctx.app.Sequelize.fn('COUNT',this.ctx.app.Sequelize.col("id")),'count']],
+            where:{
+                "create_at":createAt
+            }
         }
-        let excelBuffer = await this.service.duApp.exportDetails(condition);
-        let downloadTimer = moment(date).format('YYYYMMDD');
-        let excelName = `毒app${downloadTimer}.xlsx`
-        let downloadPath = container.get('paths')['downloads']
-        let excelFile = downloadPath+'/duapp/'+excelName
-        fs.writeFileSync(excelFile,excelBuffer)
-        let downloadFileName = urlencode(excelName,"UTF-8");
+        let res = await this.service.duApp.getSelfProductDetail(conditions)
+        this.ctx.body = res[0]["count"]
+    }
+
+    async getAllDumpCreateDateList() {
+        let conditions = {
+            raw:true,
+            attributes:['create_at'],
+            where:{
+                id:{
+                    "$gt":0
+                }
+            },
+            group:"create_at"
+        }
+        let res = await this.service.duApp.getSelfProductDetail(conditions)
+        this.ctx.body = res
+    }
+
+    async exportDetails() {
+        let query = this.ctx.query
+        let exportDate = query["date"] || moment().format("YYYY-MM-DD")
+        let details = await this.service.duApp.getSelfProductDetail({
+            raw:true,
+            where:{
+                create_at:exportDate
+            }
+        })
+        let exportDatas = []
+
+        for ( let idx in details ) {
+            let detail = details[idx]
+            let sizeList = JSON.parse(detail["size_list"])
+            for ( let [size,price] of Object.entries(sizeList) ) {
+                exportDatas.push({
+                    sku:detail['sku'],
+                    title:detail['title'],
+                    sold_total:detail['sold_total'],
+                    size,
+                    price
+                })
+            }
+        }
+        const paths = container.get('paths')
+        let excelFileName = `毒app货号详情${moment(exportDate).format("YYYYMMDD")}.xlsx`
+        let excelTemplatePath = `${paths['templates']}/毒app抓取数据_template.xlsx`
+        let excelBuffer = await excel.getExcelBuffer(excelTemplatePath,exportDatas)
+        excelFileName = urlencode(excelFileName,"UTF-8");
         this.ctx.set({
             'Content-Type': 'application/force-download; charset=utf-8',
-            'Content-Disposition': "attachment; filename* = UTF-8''"+downloadFileName,
+            'Content-Disposition': "attachment; filename* = UTF-8''"+excelFileName
         })
         this.ctx.body = excelBuffer;
     }

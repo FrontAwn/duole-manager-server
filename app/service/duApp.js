@@ -12,47 +12,26 @@ class DuAppService extends Service {
 	constructor(ctx) {
 		super(ctx)
 		this.RedisDB = this.ctx.app.redis.get('default')
-		this.DuSkusModel = this.ctx.SjResource.DuSkus;
-		this.DuSkuDetailModel = this.ctx.SjResource.DuSkuDetail;
+		this.DuappResource = this.ctx.DuappResource
+		this.SelfProductList = this.ctx.DuappResource.SelfProductList;
+		this.SelfProductDetailTotal = this.ctx.DuappResource.SelfProductDetailTotal;
+		this.NikeProductList = this.ctx.DuappResource.NikeProductList;
 	}
 
-	async exportDetails(conditions) {
-		let res = await this.DuSkuDetailModel.findAll({
-			raw:true,
-			where:conditions
-		})
-
-		if ( res.length === 0 ) {
-			throw new Error('没有搜索到数据库结果')
-			return false;
-		}
-
-		let datas = []
-        for ( let idx in res ) {
-            let data = res[idx]
-            let sizeList = JSON.parse(data['size_list'])
-            for ( let size in sizeList ) {
-                let details = sizeList[size]
-                let price = "--"
-                if ( details['price'] ) {
-                    price = details['price']
-                }
-                datas.push({
-                    'sku':data['sku'],
-                    'title':data['title'],
-                    'size':size,
-                    'price':price,
-                    'sold_num':data['sold_num'],
-                })
-            }
-        }
-        let templatePath = container.get('paths')['templates']
-        let tamplateName = '毒app抓取数据_template.xlsx'
-        let templateFile = templatePath+'/'+tamplateName
-        let excelBuffer = await excel.getExcelBuffer(templateFile,datas)
-        return excelBuffer;
+	async getSelfProductList (conditions) {
+		let res = await this.SelfProductList.findAll(conditions)
+		return res
 	}
 
+	async getSelfProductDetail(conditions) {
+		let res = await this.SelfProductDetailTotal.findAll(conditions)
+		return res
+	}
+
+	async getNikeProductList(conditions) {
+		let res = await this.NikeProductList.findAll(conditions)
+		return res
+	}
 }
 
 module.exports = DuAppService;
