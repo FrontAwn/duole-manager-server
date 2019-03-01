@@ -2,15 +2,7 @@
 
 module.exports = app => {
   const { router, controller } = app;
-  router.get('/test', controller.test.index);
-
-
-  router.get('/api/update',controller.api.update)
-  router.get('/api/finds',controller.api.finds)
-  router.get('/api/count',controller.api.count)
-
-
-
+  
   // 日报
   router.get('/daily/handleExistingTable', controller.daily.handleExistingTable); //处理日报“现货表”并保存数据
   router.get('/daily/getExistingLsByWeek', controller.daily.getExistingLsByWeek); //得到4周日报数据
