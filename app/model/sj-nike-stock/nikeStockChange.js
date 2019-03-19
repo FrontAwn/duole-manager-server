@@ -1,103 +1,103 @@
-module.exports = app=>{
+module.exports = app => {
 
-	let { STRING, DOUBLE, DATE, INTEGER, TEXT } = app.Sequelize
+  const { STRING, DOUBLE, DATE, INTEGER, TEXT } = app.Sequelize;
 
-	const tableName = "nike_stock_change"
-	
-	const NikeStockChange = app.SjNikeStock.define(tableName,{
-		id:{
-			type:INTEGER(11).UNSIGNED,
-			primaryKey:true,
-			autoIncrement:true,
-		},
+  const tableName = 'nike_stock_change';
 
-		sku:{
-			type:STRING(100),
-			allowNull:true,
-			defaultValue:'',
-		},
+  const NikeStockChange = app.SjNikeStock.define(tableName, {
+    id: {
+      type: INTEGER(11).UNSIGNED,
+      primaryKey: true,
+      autoIncrement: true,
+    },
 
-		type:{
-			type:STRING(20),
-			allowNull:true,
-			defaultValue:'',
-		},
+    sku: {
+      type: STRING(100),
+      allowNull: true,
+      defaultValue: '',
+    },
 
-		skuType:{
-			type:STRING(6),
-			allowNull:true,
-			defaultValue:'',
-		},
+    type: {
+      type: STRING(20),
+      allowNull: true,
+      defaultValue: '',
+    },
 
-		stock:{
-			type:STRING(500),
-			allowNull:true,
-			defaultValue:'',
-		},
+    skuType: {
+      type: STRING(6),
+      allowNull: true,
+      defaultValue: '',
+    },
 
-		stockChange:{
-			type:STRING(500),
-			allowNull:true,
-		},
+    stock: {
+      type: STRING(500),
+      allowNull: true,
+      defaultValue: '',
+    },
 
-		realTimeStock:{
-			type:STRING(500),
-			allowNull:true,
-		},
+    stockChange: {
+      type: STRING(500),
+      allowNull: true,
+    },
 
-		md5:{
-			type:STRING(100),
-			allowNull:true,
-			defaultValue:'',
-		},
+    realTimeStock: {
+      type: STRING(500),
+      allowNull: true,
+    },
 
-		createdAt:{
-			type:STRING(100),
-			allowNull:false,
-			defaultValue:'',
-		},
+    md5: {
+      type: STRING(100),
+      allowNull: true,
+      defaultValue: '',
+    },
 
-		updateAt:{
-			type:DATE,
-			allowNull:false,
-			defaultValue:0,
-		},
+    createdAt: {
+      type: STRING(100),
+      allowNull: false,
+      defaultValue: '',
+    },
 
-		update_time:{
-			type:DATE,
-			allowNull:false,
-			defaultValue:'',
-		},
+    updateAt: {
+      type: DATE,
+      allowNull: false,
+      defaultValue: 0,
+    },
 
-		content:{
-			type:TEXT,
-			allowNull:false,
-			defaultValue:'',
-		},
+    update_time: {
+      type: DATE,
+      allowNull: false,
+      defaultValue: '',
+    },
 
-		status:{
-			type:INTEGER(2),
-			allowNull:true,
-			defaultValue:0,
-		},
+    content: {
+      type: TEXT,
+      allowNull: false,
+      defaultValue: '',
+    },
 
-		orderScore:{
-			type:INTEGER(10),
-			allowNull:true,
-			defaultValue:0,
-		},
+    status: {
+      type: INTEGER(2),
+      allowNull: true,
+      defaultValue: 0,
+    },
 
-	},{
-		tableName:tableName,
-		timestamps: false,
-		// indexes:[
-		// 	{
+    orderScore: {
+      type: INTEGER(10),
+      allowNull: true,
+      defaultValue: 0,
+    },
+
+  }, {
+    tableName,
+    timestamps: false,
+    // indexes:[
+    // 	{
 	 //      		fields: ['sku', 'create_time'],
-		// 	}
-		// ]
-	})
+    // 	}
+    // ]
+  });
 
-	return NikeStockChange;
+  return NikeStockChange;
 
-}
+};
 
