@@ -2,7 +2,7 @@ module.exports = app => {
 
   const { STRING, DOUBLE, DATE, INTEGER } = app.Sequelize;
 
-  const tableName = 'self_product_list';
+  const tableName = 'sell_product_list';
 
   const SelfProductList = app.DuappResource.define(tableName, {
     id: {

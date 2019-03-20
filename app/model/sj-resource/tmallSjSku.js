@@ -2,15 +2,20 @@ module.exports = app => {
 
   const { STRING, DOUBLE, DATE, INTEGER } = app.Sequelize;
 
-  const tableName = 'nike_product_list';
+  const tableName = 'tmall_sj_sku';
 
-  const NikeProductList = app.DuappResource.define(tableName, {
+  const TmallSjSku = app.SjResource.define(tableName, {
     id: {
       type: INTEGER(11).UNSIGNED,
       primaryKey: true,
       autoIncrement: true,
     },
-    product_id: {
+    item_id: {
+      type: STRING(100),
+      allowNull: false,
+      defaultValue: '',
+    },
+    sku: {
       type: STRING(100),
       allowNull: false,
       defaultValue: '',
@@ -20,8 +25,13 @@ module.exports = app => {
       allowNull: false,
       defaultValue: '',
     },
-    url: {
-      type: STRING(500),
+    stock: {
+      type: INTEGER(11).UNSIGNED,
+      allowNull: 0,
+      defaultValue: '',
+    },
+    size_list: {
+      type: STRING(3000),
       allowNull: false,
       defaultValue: '',
     },
@@ -40,7 +50,7 @@ module.exports = app => {
     // ]
   });
 
-  return NikeProductList;
+  return TmallSjSku;
 
 };
 

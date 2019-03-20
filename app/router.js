@@ -10,11 +10,9 @@ module.exports = app => {
 
 
   // 毒app
-  router.post('/duApp/saveSkus', controller.duApp.saveSkus); // 存储duapp货号
-  router.get('/duApp/getNeedDumpProductCount', controller.duApp.getNeedDumpProductCount);
-  router.get('/duApp/getAlreadyDumpProductConut', controller.duApp.getAlreadyDumpProductConut);
-  router.get('/duApp/getAllDumpCreateDateList', controller.duApp.getAllDumpCreateDateList);
-  router.get('/duApp/exportDetails', controller.duApp.exportDetails);
+  router.get('/du/getNeedDumpProductCount', controller.du.getNeedDumpProductCount);
+  router.get('/du/getAlreadyDumpProductConut', controller.du.getAlreadyDumpProductConut);
+  router.get('/du/getAllDumpCreateDateList', controller.du.getAllDumpCreateDateList);
 
 
   // nike官网
@@ -23,6 +21,12 @@ module.exports = app => {
   router.get('/nike/execGenerateStockCommand', controller.nike.execGenerateStockCommand);
   router.get('/nike/downloadStockExcelFile', controller.nike.downloadStockExcelFile);
 
+
+  // tmall
+  router.get("/tmall/writeCookie",controller.tmall.writeCookie);
+  router.get("/tmall/cleanCookie",controller.tmall.cleanCookie);
+  router.get("/tmall/truncateTable",controller.tmall.truncateTable)
+  router.post("/tmall/saveSkuDetails",controller.tmall.saveSkuDetails)
 
   // 文件上传
   router.get('/upload/getExistChunks', controller.upload.getExistChunks);

@@ -1,7 +1,7 @@
 module.exports = app => {
 
   const { STRING, DOUBLE, DATE, INTEGER } = app.Sequelize;
-  const tableName = 'self_product_detail_total';
+  const tableName = 'sell_product_detail_total';
 
   const SelfProductDetailTotal = app.DuappResource.define(tableName, {
     id: {
@@ -16,12 +16,6 @@ module.exports = app => {
       defaultValue: '',
     },
 
-    item_id: {
-      type: STRING(100),
-      allowNull: false,
-      defaultValue: '',
-    },
-
     price: {
       type: STRING(100),
       allowNull: false,
@@ -29,8 +23,8 @@ module.exports = app => {
     },
 
     product_id: {
-      type: STRING(100),
-      allowNull: false,
+      type: INTEGER(11).UNSIGNED,
+      allowNull: 0,
       defaultValue: '',
     },
 
@@ -52,7 +46,7 @@ module.exports = app => {
       defaultValue: '',
     },
 
-    sold_today_num: {
+    sold_num: {
       type: STRING(100),
       allowNull: false,
       defaultValue: '',
@@ -64,14 +58,21 @@ module.exports = app => {
       defaultValue: '',
     },
 
-    sell_date: {
+    sold_last_id: {
+      type: STRING(300),
+      allowNull: false,
+      defaultValue: '',
+    },
+
+    create_at: {
       type: STRING(100),
       allowNull: false,
       defaultValue: '',
     },
-    create_at: {
-      type: STRING(100),
-      allowNull: false,
+    
+    date_num: {
+      type: INTEGER(11).UNSIGNED,
+      allowNull: 0,
       defaultValue: '',
     },
   }, {
