@@ -1,7 +1,7 @@
 const Controller = require('egg').Controller;
 const urlencode = require('urlencode');
 const excel = require('../utils').excel;
-
+const common = require("../utils").common
 
 class TmallController extends Controller { 
 
@@ -31,16 +31,20 @@ class TmallController extends Controller {
 	}
 
 	async saveSkuDetails() {
-		let body = ""
-
-		function end() {
-			console.log(body)
-		}
-
-		this.ctx.req.on("data",chunk=>{
-			body += chunk
+		let body = Object.values(this.ctx.request.body)[0]
+		body = body.replace(/[\r\n]/g,"@@@@@")
+		body = body.split("@@@@@").filter(content=>{
+			return content !== ""
 		})
-		this.ctx.req.on("end",end)
+		let [key,datas] = body
+		datas = JSON.parse(datas)
+		let chunks = common.getChunks(datas)
+		for ( let [idx,chunk] of chunks.entries() ) {
+			await this.SjResource.transaction(async t=>{
+				await this.TmallSjSku.bulkCreate(chunk,{transaction:t})
+			})
+		}
+		this.ctx.body = true
 	}
 
 

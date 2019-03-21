@@ -10,9 +10,6 @@ module.exports = app => {
 
 
   // 毒app
-  router.get('/du/getNeedDumpProductCount', controller.du.getNeedDumpProductCount);
-  router.get('/du/getAlreadyDumpProductConut', controller.du.getAlreadyDumpProductConut);
-  router.get('/du/getAllDumpCreateDateList', controller.du.getAllDumpCreateDateList);
 
 
   // nike官网

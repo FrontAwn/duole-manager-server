@@ -46,7 +46,7 @@ class UploadController extends Controller {
   }
 
   async writeChunks() {
-    const { chunk, idx, md5 } = this.ctx.request.body;
+    const { chunk, idx, md5 } = this.ctx.request.fields;
     const tmpPath = chunk[0].path;
     const uploadPath = paths.uploads;
     const chunkPath = `${uploadPath}/${md5}/${idx}`;

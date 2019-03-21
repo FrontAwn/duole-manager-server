@@ -8,52 +8,6 @@ const excel = require('../utils').excel;
 
 class DuController extends Controller {
 
-  async getNeedDumpProductCount() {
-    const conditions = {
-      raw: true,
-      attributes: [[ this.ctx.app.Sequelize.fn('COUNT', this.ctx.app.Sequelize.col('id')), 'count' ]],
-      where: {
-        type: 2,
-        url:{
-          "$ne":""
-        }
-      },
-    };
-    const res = await this.service.du.getSellProductList(conditions);
-    this.ctx.body = res[0].count;
-  }
-
-  async getAlreadyDumpProductConut() {
-    const { createAt } = this.ctx.query;
-    const conditions = {
-      raw: true,
-      attributes: [[ this.ctx.app.Sequelize.fn('COUNT', this.ctx.app.Sequelize.col('id')), 'count' ]],
-      where: {
-        create_at: createAt,
-        "title":{
-          "$ne":""
-        }
-      },
-    };
-    const res = await this.service.du.getSellProductDetail(conditions);
-    this.ctx.body = res[0].count;
-  }
-
-  async getAllDumpCreateDateList() {
-    const conditions = {
-      raw: true,
-      attributes: [ 'create_at' ],
-      where: {
-        id: {
-          $gt: 0,
-        },
-      },
-      group: 'create_at',
-    };
-    const res = await this.service.du.getSellProductDetail(conditions);
-    this.ctx.body = res;
-  }
-
 
   // async exportDetails() {
   //   const query = this.ctx.query;
