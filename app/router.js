@@ -10,6 +10,12 @@ module.exports = app => {
 
 
   // 毒app
+  router.get('/du/getSellProductList',controller.du.getSellProductList)
+  router.get('/du/getSellProductDetail',controller.du.getSellProductDetail)
+  router.get('/du/updateSellProductList',controller.du.updateSellProductList)
+  router.get('/du/updateSellProductDetail',controller.du.updateSellProductDetail)
+  router.get('/du/createSellProductList',controller.du.createSellProductList)
+  router.get('/du/createSellProductDetail',controller.du.createSellProductDetail)
 
 
   // nike官网

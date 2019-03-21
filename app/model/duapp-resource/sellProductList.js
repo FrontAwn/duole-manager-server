@@ -35,6 +35,11 @@ module.exports = app => {
       allowNull: false,
       defaultValue: 0,
     },
+    sold_num: {
+      type: STRING(100),
+      allowNull: false,
+      defaultValue: '',
+    },
     create_at: {
       type: STRING(100),
       allowNull: false,

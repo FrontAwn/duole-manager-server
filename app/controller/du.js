@@ -8,6 +8,63 @@ const excel = require('../utils').excel;
 
 class DuController extends Controller {
 
+    async getSellProductList() {
+        let { conditions } = this.ctx.query
+        conditions = JSON.parse(conditions)
+        let res = await this.service.du.getSellProductList(conditions)
+        this.ctx.body = res
+    }
+
+    async getSellProductDetail() {
+        let { conditions } = this.ctx.query
+        conditions = JSON.parse(conditions)
+        let res = await this.service.du.getSellProductDetail(conditions)
+        this.ctx.body = res   
+    }
+
+
+    async updateSellProductList() {
+        let { content, where } = this.ctx.query
+        content = JSON.parse(content)
+        where = JSON.parse(where)
+        let res = await this.service.du.updateSellProductList(content,where)
+        this.ctx.body = res
+    }
+
+    async updateSellProductDetail() {
+        let { content, where } = this.ctx.query
+        content = JSON.parse(content)
+        where = JSON.parse(where)
+        let res = await this.service.du.updateSellProductDetail(content,where)
+        this.ctx.body = res
+    }
+
+    async createSellProductList() {
+        let { content } = this.ctx.query
+        content = JSON.parse(content)
+        let res = null
+        if ( Array.isArray(content) ) {
+            res = await this.service.du.bulkCreateSellProductList(content)
+        } else {
+            res = await this.service.du.createSellProductList(content)
+        }
+        this.ctx.body = res
+    }
+
+    async createSellProductDetail() {
+        let { content } = this.ctx.query
+        content = JSON.parse(content)
+        let res = null
+        if ( Array.isArray(content) ) {
+            res = await this.service.du.bulkCreateSellProductDetail(content)
+        } else {
+            res = await this.service.du.createSellProductDetail(content)
+        }
+        this.ctx.body = res
+    }
+
+
+
 
   // async exportDetails() {
   //   const query = this.ctx.query;

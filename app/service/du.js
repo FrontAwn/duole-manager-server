@@ -26,40 +26,67 @@ class DuService extends Service {
   }
 
   async updateSellProductList(content,where) {
+    let res = null
     await this.DuappResource.transaction(async t=>{
-      await this.SellProductList.update(content,{
+      res = await this.SellProductList.update(content,{
         where:where,
         transaction:t
       })
     })
+    return res
   }
 
   async updateSellProductDetail(content,where) {
+    let res = null
     await this.DuappResource.transaction(async t=>{
-      await this.SellProductDetailTotal.update(content,{
+      res = await this.SellProductDetailTotal.update(content,{
         where:where,
         transaction:t
       })
     })
+    return res
   }
 
   async createSellProductList(content) {
+    let res = null
     await this.DuappResource.transaction(async t=>{
-      await this.SellProductList.create(content,{
+      res = await this.SellProductList.create(content,{
         transaction:t
       })
     })
-
+    return res
   }
 
   async createSellProductDetail(content) {
+    let res = null
     await this.DuappResource.transaction(async t=>{
-      await this.SellProductDetailTotal.create(content,{
+      res = await this.SellProductDetailTotal.create(content,{
         transaction:t
       })
     })
+    return res
   }
   
+  async bulkCreateSellProductList(content) {
+    let res = null
+    await this.DuappResource.transaction(async t=>{
+      res = await this.SellProductList.bulkCreate(content,{
+        transaction:t
+      })
+    })
+    return res
+  }
+
+  async bulkCreateSellProductDetail(content) {
+    let res = null
+    await this.DuappResource.transaction(async t=>{
+      res = await this.SellProductDetailTotal.bulkCreate(content,{
+        transaction:t
+      })
+    })
+    return res
+  }
+
 }
 
 module.exports = DuService;
