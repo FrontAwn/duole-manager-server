@@ -16,7 +16,8 @@ module.exports = app => {
   router.get('/du/updateSellProductDetail',controller.du.updateSellProductDetail)
   router.get('/du/createSellProductList',controller.du.createSellProductList)
   router.get('/du/createSellProductDetail',controller.du.createSellProductDetail)
-
+  router.get('/du/deleteSellProductList',controller.du.deleteSellProductList)
+  router.get('/du/deleteSellProductDetail',controller.du.deleteSellProductDetail)
 
   // nike官网
   router.get('/nike/getChangeList', controller.nike.getChangeList);

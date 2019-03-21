@@ -63,7 +63,19 @@ class DuController extends Controller {
         this.ctx.body = res
     }
 
+    async deleteSellProductList() {
+        let { where } = this.ctx.query
+        where = JSON.parse(where)
+        let res = await this.service.du.deleteSellProductList(where)
+        this.ctx.body = res
+    }
 
+    async deleteSellProductDetail() {
+        let { where } = this.ctx.query
+        where = JSON.parse(where)
+        let res = await this.service.du.deleteSellProductDetail(where)
+        this.ctx.body = res
+    }
 
 
   // async exportDetails() {

@@ -87,6 +87,28 @@ class DuService extends Service {
     return res
   }
 
+  async deleteSellProductList(where) {
+    let res = null
+    await this.DuappResource.transaction(async t=>{
+      res = await this.SellProductList.destroy({
+        where,
+        transaction:t
+      })
+    })
+    return res 
+  }
+
+  async deleteSellProductDetail(where) {
+    let res = null
+    await this.DuappResource.transaction(async t=>{
+      res = await this.SellProductDetailTotal.destroy({
+        where,
+        transaction:t
+      })
+    })
+    return res 
+  }
+
 }
 
 module.exports = DuService;
